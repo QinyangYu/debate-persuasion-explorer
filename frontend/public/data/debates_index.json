@@ -1,0 +1,1532 @@
+[
+  {
+    "id": "12686b10b02c1b",
+    "title": "Gay Marraige Should Be Allowed.",
+    "category": "Society",
+    "start_date": "1/24/2009",
+    "participants": [
+      {
+        "username": "sydnerella",
+        "position": "PRO",
+        "points": 1092,
+        "status": "Winning"
+      },
+      {
+        "username": "InquireTruth",
+        "position": "CON",
+        "points": 1082,
+        "status": "Losing"
+      }
+    ],
+    "total_votes": 395,
+    "valid_transitions": 317,
+    "switchers": 16,
+    "switch_rate": 0.0505,
+    "transitions": {
+      "PRO -> PRO": 168,
+      "PRO -> CON": 15,
+      "CON -> PRO": 1,
+      "CON -> CON": 133
+    }
+  },
+  {
+    "id": "4f326545ba9d78",
+    "title": "Homosexual Behavior Is Immoral",
+    "category": "Society",
+    "start_date": "6/15/2010",
+    "participants": [
+      {
+        "username": "RationalTheism",
+        "position": "PRO",
+        "points": 255,
+        "status": "Losing"
+      },
+      {
+        "username": "VenomousPen",
+        "position": "CON",
+        "points": 343,
+        "status": "Winning"
+      }
+    ],
+    "total_votes": 104,
+    "valid_transitions": 94,
+    "switchers": 3,
+    "switch_rate": 0.0319,
+    "transitions": {
+      "PRO -> PRO": 34,
+      "PRO -> CON": 2,
+      "CON -> PRO": 1,
+      "CON -> CON": 57
+    }
+  },
+  {
+    "id": "1f7a3eb5897988",
+    "title": "murder is right",
+    "category": "Entertainment",
+    "start_date": "1/15/2009",
+    "participants": [
+      {
+        "username": "Logical-Master",
+        "position": "PRO",
+        "points": 482,
+        "status": "Winning"
+      },
+      {
+        "username": "fo-shizzle",
+        "position": "CON",
+        "points": 163,
+        "status": "Losing"
+      }
+    ],
+    "total_votes": 104,
+    "valid_transitions": 85,
+    "switchers": 27,
+    "switch_rate": 0.3176,
+    "transitions": {
+      "PRO -> PRO": 17,
+      "PRO -> CON": 3,
+      "CON -> PRO": 24,
+      "CON -> CON": 41
+    }
+  },
+  {
+    "id": "934b03f2566f43",
+    "title": "Vote-Bombing Contest!",
+    "category": "Games",
+    "start_date": "1/13/2014",
+    "participants": [
+      {
+        "username": "STALIN",
+        "position": "PRO",
+        "points": 339,
+        "status": "Losing"
+      },
+      {
+        "username": "kawaii_crazy",
+        "position": "CON",
+        "points": 345,
+        "status": "Winning"
+      }
+    ],
+    "total_votes": 105,
+    "valid_transitions": 70,
+    "switchers": 5,
+    "switch_rate": 0.0714,
+    "transitions": {
+      "PRO -> PRO": 35,
+      "PRO -> CON": 3,
+      "CON -> PRO": 2,
+      "CON -> CON": 30
+    }
+  },
+  {
+    "id": "84b898d5eec006",
+    "title": "George Bush Was a Good President",
+    "category": "Politics",
+    "start_date": "4/3/2009",
+    "participants": [
+      {
+        "username": "youngpolitic",
+        "position": "PRO",
+        "points": 198,
+        "status": "Tied"
+      },
+      {
+        "username": "wpfairbanks",
+        "position": "CON",
+        "points": 198,
+        "status": "Tied"
+      }
+    ],
+    "total_votes": 68,
+    "valid_transitions": 57,
+    "switchers": 2,
+    "switch_rate": 0.0351,
+    "transitions": {
+      "PRO -> PRO": 23,
+      "PRO -> CON": 1,
+      "CON -> PRO": 1,
+      "CON -> CON": 32
+    }
+  },
+  {
+    "id": "3fa344595ce662",
+    "title": "Gay Marriage Should Be Legalized.",
+    "category": "Society",
+    "start_date": "10/19/2008",
+    "participants": [
+      {
+        "username": "TheSkeptic",
+        "position": "PRO",
+        "points": 199,
+        "status": "Winning"
+      },
+      {
+        "username": "Phil",
+        "position": "CON",
+        "points": 190,
+        "status": "Losing"
+      }
+    ],
+    "total_votes": 68,
+    "valid_transitions": 52,
+    "switchers": 3,
+    "switch_rate": 0.0577,
+    "transitions": {
+      "PRO -> PRO": 25,
+      "PRO -> CON": 1,
+      "CON -> PRO": 2,
+      "CON -> CON": 24
+    }
+  },
+  {
+    "id": "249b8fdbc922d8",
+    "title": "Gay Marriage Should Be Legalized.",
+    "category": "Politics",
+    "start_date": "3/26/2009",
+    "participants": [
+      {
+        "username": "TheSkeptic",
+        "position": "PRO",
+        "points": 198,
+        "status": "Losing"
+      },
+      {
+        "username": "InquireTruth",
+        "position": "CON",
+        "points": 207,
+        "status": "Winning"
+      }
+    ],
+    "total_votes": 68,
+    "valid_transitions": 49,
+    "switchers": 1,
+    "switch_rate": 0.0204,
+    "transitions": {
+      "PRO -> PRO": 28,
+      "PRO -> CON": 1,
+      "CON -> PRO": 0,
+      "CON -> CON": 20
+    }
+  },
+  {
+    "id": "ee39c5daed6a74",
+    "title": "On balance, Anarchism is More Humanitarian than State Planning",
+    "category": "Politics",
+    "start_date": "8/19/2010",
+    "participants": [
+      {
+        "username": "Sieben",
+        "position": "PRO",
+        "points": 165,
+        "status": "Losing"
+      },
+      {
+        "username": "Danielle",
+        "position": "CON",
+        "points": 176,
+        "status": "Winning"
+      }
+    ],
+    "total_votes": 65,
+    "valid_transitions": 45,
+    "switchers": 4,
+    "switch_rate": 0.0889,
+    "transitions": {
+      "PRO -> PRO": 21,
+      "PRO -> CON": 3,
+      "CON -> PRO": 1,
+      "CON -> CON": 20
+    }
+  },
+  {
+    "id": "8634e6e23eef2d",
+    "title": "Pre-Marital Sex",
+    "category": "Society",
+    "start_date": "2/5/2010",
+    "participants": [
+      {
+        "username": "Freeman",
+        "position": "PRO",
+        "points": 217,
+        "status": "Winning"
+      },
+      {
+        "username": "Witty11",
+        "position": "CON",
+        "points": 79,
+        "status": "Losing"
+      }
+    ],
+    "total_votes": 54,
+    "valid_transitions": 45,
+    "switchers": 1,
+    "switch_rate": 0.0222,
+    "transitions": {
+      "PRO -> PRO": 32,
+      "PRO -> CON": 1,
+      "CON -> PRO": 0,
+      "CON -> CON": 12
+    }
+  },
+  {
+    "id": "4efe22d95ccc1a",
+    "title": "Christianity is a force for good in the world.",
+    "category": "Religion",
+    "start_date": "12/29/2009",
+    "participants": [
+      {
+        "username": "RoyLatham",
+        "position": "PRO",
+        "points": 178,
+        "status": "Winning"
+      },
+      {
+        "username": "Freeman",
+        "position": "CON",
+        "points": 172,
+        "status": "Losing"
+      }
+    ],
+    "total_votes": 64,
+    "valid_transitions": 44,
+    "switchers": 3,
+    "switch_rate": 0.0682,
+    "transitions": {
+      "PRO -> PRO": 20,
+      "PRO -> CON": 2,
+      "CON -> PRO": 1,
+      "CON -> CON": 21
+    }
+  },
+  {
+    "id": "f25ad532fee4c9",
+    "title": "Given the Bible, God is Morally Repugnant and Undeserving of Praise (+).",
+    "category": "Religion",
+    "start_date": "11/25/2008",
+    "participants": [
+      {
+        "username": "JustCallMeTarzan",
+        "position": "PRO",
+        "points": 187,
+        "status": "Losing"
+      },
+      {
+        "username": "InquireTruth",
+        "position": "CON",
+        "points": 189,
+        "status": "Winning"
+      }
+    ],
+    "total_votes": 60,
+    "valid_transitions": 44,
+    "switchers": 2,
+    "switch_rate": 0.0455,
+    "transitions": {
+      "PRO -> PRO": 20,
+      "PRO -> CON": 2,
+      "CON -> PRO": 0,
+      "CON -> CON": 22
+    }
+  },
+  {
+    "id": "6c63d9b84d0fd8",
+    "title": "Bush did the right thing when we went into Iraq and Afghanistan.",
+    "category": "Politics",
+    "start_date": "9/13/2008",
+    "participants": [
+      {
+        "username": "Jamesothy",
+        "position": "PRO",
+        "points": 94,
+        "status": "Losing"
+      },
+      {
+        "username": "gusgusthegreat",
+        "position": "CON",
+        "points": 213,
+        "status": "Winning"
+      }
+    ],
+    "total_votes": 46,
+    "valid_transitions": 44,
+    "switchers": 1,
+    "switch_rate": 0.0227,
+    "transitions": {
+      "PRO -> PRO": 16,
+      "PRO -> CON": 1,
+      "CON -> PRO": 0,
+      "CON -> CON": 27
+    }
+  },
+  {
+    "id": "9b7401b8d56143",
+    "title": "R: It is morally permissible to kill one innocent person to save the lives of many innocent people.",
+    "category": "Politics",
+    "start_date": "8/29/2008",
+    "participants": [
+      {
+        "username": "CiRrO",
+        "position": "PRO",
+        "points": 156,
+        "status": "Winning"
+      },
+      {
+        "username": "LR4N6FTW4EVA",
+        "position": "CON",
+        "points": 116,
+        "status": "Losing"
+      }
+    ],
+    "total_votes": 51,
+    "valid_transitions": 42,
+    "switchers": 2,
+    "switch_rate": 0.0476,
+    "transitions": {
+      "PRO -> PRO": 24,
+      "PRO -> CON": 0,
+      "CON -> PRO": 2,
+      "CON -> CON": 16
+    }
+  },
+  {
+    "id": "60fd5a27272af8",
+    "title": "Sarah Palin would be a good president of the United States.",
+    "category": "Politics",
+    "start_date": "6/9/2010",
+    "participants": [
+      {
+        "username": "RoyLatham",
+        "position": "PRO",
+        "points": 126,
+        "status": "Winning"
+      },
+      {
+        "username": "Freeman",
+        "position": "CON",
+        "points": 118,
+        "status": "Losing"
+      }
+    ],
+    "total_votes": 51,
+    "valid_transitions": 41,
+    "switchers": 4,
+    "switch_rate": 0.0976,
+    "transitions": {
+      "PRO -> PRO": 9,
+      "PRO -> CON": 0,
+      "CON -> PRO": 4,
+      "CON -> CON": 28
+    }
+  },
+  {
+    "id": "3ab5e86524e80f",
+    "title": "The fat should be made to buy two seats on planes",
+    "category": "Miscellaneous",
+    "start_date": "3/30/2009",
+    "participants": [
+      {
+        "username": "brian_eggleston",
+        "position": "PRO",
+        "points": 216,
+        "status": "Winning"
+      },
+      {
+        "username": "thisoneguy",
+        "position": "CON",
+        "points": 110,
+        "status": "Losing"
+      }
+    ],
+    "total_votes": 56,
+    "valid_transitions": 41,
+    "switchers": 2,
+    "switch_rate": 0.0488,
+    "transitions": {
+      "PRO -> PRO": 27,
+      "PRO -> CON": 2,
+      "CON -> PRO": 0,
+      "CON -> CON": 12
+    }
+  },
+  {
+    "id": "944fc88009a615",
+    "title": "Obama will not be our next President",
+    "category": "Politics",
+    "start_date": "9/14/2008",
+    "participants": [
+      {
+        "username": "joshandr30",
+        "position": "PRO",
+        "points": 87,
+        "status": "Losing"
+      },
+      {
+        "username": "brittwaller",
+        "position": "CON",
+        "points": 205,
+        "status": "Winning"
+      }
+    ],
+    "total_votes": 48,
+    "valid_transitions": 40,
+    "switchers": 5,
+    "switch_rate": 0.125,
+    "transitions": {
+      "PRO -> PRO": 15,
+      "PRO -> CON": 3,
+      "CON -> PRO": 2,
+      "CON -> CON": 20
+    }
+  },
+  {
+    "id": "d4fcda31c2553c",
+    "title": "Marijuana Legalization",
+    "category": "Society",
+    "start_date": "3/10/2009",
+    "participants": [
+      {
+        "username": "SuperPerfundo",
+        "position": "PRO",
+        "points": 179,
+        "status": "Winning"
+      },
+      {
+        "username": "Epicism",
+        "position": "CON",
+        "points": 101,
+        "status": "Losing"
+      }
+    ],
+    "total_votes": 45,
+    "valid_transitions": 40,
+    "switchers": 2,
+    "switch_rate": 0.05,
+    "transitions": {
+      "PRO -> PRO": 27,
+      "PRO -> CON": 1,
+      "CON -> PRO": 1,
+      "CON -> CON": 11
+    }
+  },
+  {
+    "id": "f1e4410dfd004a",
+    "title": "Women on US submarines",
+    "category": "Politics",
+    "start_date": "6/6/2010",
+    "participants": [
+      {
+        "username": "Danielle",
+        "position": "PRO",
+        "points": 127,
+        "status": "Winning"
+      },
+      {
+        "username": "browncd81",
+        "position": "CON",
+        "points": 125,
+        "status": "Losing"
+      }
+    ],
+    "total_votes": 52,
+    "valid_transitions": 39,
+    "switchers": 9,
+    "switch_rate": 0.2308,
+    "transitions": {
+      "PRO -> PRO": 18,
+      "PRO -> CON": 6,
+      "CON -> PRO": 3,
+      "CON -> CON": 12
+    }
+  },
+  {
+    "id": "afa06d6e9a90cf",
+    "title": "Abortion should be illegal in the United States",
+    "category": "Politics",
+    "start_date": "6/4/2009",
+    "participants": [
+      {
+        "username": "Lifeisgood",
+        "position": "PRO",
+        "points": 164,
+        "status": "Losing"
+      },
+      {
+        "username": "Xer",
+        "position": "CON",
+        "points": 169,
+        "status": "Winning"
+      }
+    ],
+    "total_votes": 50,
+    "valid_transitions": 38,
+    "switchers": 2,
+    "switch_rate": 0.0526,
+    "transitions": {
+      "PRO -> PRO": 17,
+      "PRO -> CON": 1,
+      "CON -> PRO": 1,
+      "CON -> CON": 19
+    }
+  },
+  {
+    "id": "2cc4f3477030d0",
+    "title": "Late term abortion is morally correct in every situation",
+    "category": "Health",
+    "start_date": "4/10/2009",
+    "participants": [
+      {
+        "username": "TheSkeptic",
+        "position": "PRO",
+        "points": 148,
+        "status": "Winning"
+      },
+      {
+        "username": "rougeagent21",
+        "position": "CON",
+        "points": 146,
+        "status": "Losing"
+      }
+    ],
+    "total_votes": 47,
+    "valid_transitions": 37,
+    "switchers": 2,
+    "switch_rate": 0.0541,
+    "transitions": {
+      "PRO -> PRO": 12,
+      "PRO -> CON": 0,
+      "CON -> PRO": 2,
+      "CON -> CON": 23
+    }
+  },
+  {
+    "id": "5a11e93ace7b69",
+    "title": "The existence of God",
+    "category": "Religion",
+    "start_date": "12/3/2008",
+    "participants": [
+      {
+        "username": "DiablosChaosBroker",
+        "position": "PRO",
+        "points": 115,
+        "status": "Losing"
+      },
+      {
+        "username": "Puck",
+        "position": "CON",
+        "points": 133,
+        "status": "Winning"
+      }
+    ],
+    "total_votes": 42,
+    "valid_transitions": 36,
+    "switchers": 1,
+    "switch_rate": 0.0278,
+    "transitions": {
+      "PRO -> PRO": 17,
+      "PRO -> CON": 1,
+      "CON -> PRO": 0,
+      "CON -> CON": 18
+    }
+  },
+  {
+    "id": "ec3665cbb2e36b",
+    "title": "Christianity is a force for good in the world.",
+    "category": "Religion",
+    "start_date": "12/29/2009",
+    "participants": [
+      {
+        "username": "InquireTruth",
+        "position": "PRO",
+        "points": 130,
+        "status": "Winning"
+      },
+      {
+        "username": "Freeman",
+        "position": "CON",
+        "points": 117,
+        "status": "Losing"
+      }
+    ],
+    "total_votes": 44,
+    "valid_transitions": 35,
+    "switchers": 2,
+    "switch_rate": 0.0571,
+    "transitions": {
+      "PRO -> PRO": 17,
+      "PRO -> CON": 1,
+      "CON -> PRO": 1,
+      "CON -> CON": 16
+    }
+  },
+  {
+    "id": "506bd4b36da605",
+    "title": "Preschool Is A Waste Of Time",
+    "category": "Education",
+    "start_date": "10/15/2007",
+    "participants": [
+      {
+        "username": "Phil",
+        "position": "PRO",
+        "points": 90,
+        "status": "Losing"
+      },
+      {
+        "username": "Crystal",
+        "position": "CON",
+        "points": 261,
+        "status": "Winning"
+      }
+    ],
+    "total_votes": 92,
+    "valid_transitions": 31,
+    "switchers": 5,
+    "switch_rate": 0.1613,
+    "transitions": {
+      "PRO -> PRO": 6,
+      "PRO -> CON": 3,
+      "CON -> PRO": 2,
+      "CON -> CON": 20
+    }
+  },
+  {
+    "id": "31dc2d6152569d",
+    "title": "Men have easier life than women",
+    "category": "Entertainment",
+    "start_date": "9/20/2008",
+    "participants": [
+      {
+        "username": "Lencie",
+        "position": "PRO",
+        "points": 36,
+        "status": "Losing"
+      },
+      {
+        "username": "Logical-Master",
+        "position": "CON",
+        "points": 187,
+        "status": "Winning"
+      }
+    ],
+    "total_votes": 38,
+    "valid_transitions": 31,
+    "switchers": 4,
+    "switch_rate": 0.129,
+    "transitions": {
+      "PRO -> PRO": 5,
+      "PRO -> CON": 4,
+      "CON -> PRO": 0,
+      "CON -> CON": 22
+    }
+  },
+  {
+    "id": "dc1fa9aa44b5e4",
+    "title": "The Bible is an immoral bit of utter crap.",
+    "category": "Religion",
+    "start_date": "5/9/2009",
+    "participants": [
+      {
+        "username": "Tatarize",
+        "position": "PRO",
+        "points": 116,
+        "status": "Losing"
+      },
+      {
+        "username": "mongeese",
+        "position": "CON",
+        "points": 131,
+        "status": "Winning"
+      }
+    ],
+    "total_votes": 41,
+    "valid_transitions": 31,
+    "switchers": 2,
+    "switch_rate": 0.0645,
+    "transitions": {
+      "PRO -> PRO": 15,
+      "PRO -> CON": 2,
+      "CON -> PRO": 0,
+      "CON -> CON": 14
+    }
+  },
+  {
+    "id": "a5d9354f91fb47",
+    "title": "Gay Marriage should be 100% legal",
+    "category": "Politics",
+    "start_date": "3/12/2009",
+    "participants": [
+      {
+        "username": "abard124",
+        "position": "PRO",
+        "points": 112,
+        "status": "Tied"
+      },
+      {
+        "username": "Alex",
+        "position": "CON",
+        "points": 112,
+        "status": "Tied"
+      }
+    ],
+    "total_votes": 37,
+    "valid_transitions": 31,
+    "switchers": 2,
+    "switch_rate": 0.0645,
+    "transitions": {
+      "PRO -> PRO": 18,
+      "PRO -> CON": 1,
+      "CON -> PRO": 1,
+      "CON -> CON": 11
+    }
+  },
+  {
+    "id": "a6db82d374583a",
+    "title": "Gay Marriage Should Be Legal in the United States",
+    "category": "Politics",
+    "start_date": "2/9/2009",
+    "participants": [
+      {
+        "username": "JustCallMeTarzan",
+        "position": "PRO",
+        "points": 103,
+        "status": "Losing"
+      },
+      {
+        "username": "InquireTruth",
+        "position": "CON",
+        "points": 158,
+        "status": "Winning"
+      }
+    ],
+    "total_votes": 39,
+    "valid_transitions": 30,
+    "switchers": 2,
+    "switch_rate": 0.0667,
+    "transitions": {
+      "PRO -> PRO": 15,
+      "PRO -> CON": 2,
+      "CON -> PRO": 0,
+      "CON -> CON": 13
+    }
+  },
+  {
+    "id": "f439337de81a7f",
+    "title": "Communism > Capitalism",
+    "category": "Politics",
+    "start_date": "6/15/2009",
+    "participants": [
+      {
+        "username": "Kefka",
+        "position": "PRO",
+        "points": 90,
+        "status": "Losing"
+      },
+      {
+        "username": "Vi_Veri",
+        "position": "CON",
+        "points": 102,
+        "status": "Winning"
+      }
+    ],
+    "total_votes": 36,
+    "valid_transitions": 30,
+    "switchers": 2,
+    "switch_rate": 0.0667,
+    "transitions": {
+      "PRO -> PRO": 9,
+      "PRO -> CON": 0,
+      "CON -> PRO": 2,
+      "CON -> CON": 19
+    }
+  },
+  {
+    "id": "c5c8ccf3f6b266",
+    "title": "It is reasonable to believe that the Resurrection of Jesus is a historical event",
+    "category": "Religion",
+    "start_date": "3/20/2010",
+    "participants": [
+      {
+        "username": "Bible-Defender",
+        "position": "PRO",
+        "points": 94,
+        "status": "Winning"
+      },
+      {
+        "username": "TheSkeptic",
+        "position": "CON",
+        "points": 90,
+        "status": "Losing"
+      }
+    ],
+    "total_votes": 35,
+    "valid_transitions": 29,
+    "switchers": 4,
+    "switch_rate": 0.1379,
+    "transitions": {
+      "PRO -> PRO": 11,
+      "PRO -> CON": 3,
+      "CON -> PRO": 1,
+      "CON -> CON": 14
+    }
+  },
+  {
+    "id": "bce55b2741d30f",
+    "title": "Puppies should be tortured and killed.",
+    "category": "Miscellaneous",
+    "start_date": "9/29/2008",
+    "participants": [
+      {
+        "username": "burningpuppies101",
+        "position": "PRO",
+        "points": 136,
+        "status": "Winning"
+      },
+      {
+        "username": "Tatarize",
+        "position": "CON",
+        "points": 74,
+        "status": "Losing"
+      }
+    ],
+    "total_votes": 34,
+    "valid_transitions": 29,
+    "switchers": 1,
+    "switch_rate": 0.0345,
+    "transitions": {
+      "PRO -> PRO": 14,
+      "PRO -> CON": 0,
+      "CON -> PRO": 1,
+      "CON -> CON": 14
+    }
+  },
+  {
+    "id": "095c59ac0979c7",
+    "title": "Resolved: In a democratic society, felons ought to retain the right to vote.",
+    "category": "Politics",
+    "start_date": "9/4/2008",
+    "participants": [
+      {
+        "username": "The_Devils_Advocate",
+        "position": "PRO",
+        "points": 82,
+        "status": "Losing"
+      },
+      {
+        "username": "Johnicle",
+        "position": "CON",
+        "points": 90,
+        "status": "Winning"
+      }
+    ],
+    "total_votes": 29,
+    "valid_transitions": 25,
+    "switchers": 6,
+    "switch_rate": 0.24,
+    "transitions": {
+      "PRO -> PRO": 9,
+      "PRO -> CON": 3,
+      "CON -> PRO": 3,
+      "CON -> CON": 10
+    }
+  },
+  {
+    "id": "a32771d4b2d6b6",
+    "title": "Barack Obama will be a great leader because he gives great speeches and promises hope and change.",
+    "category": "Politics",
+    "start_date": "6/5/2009",
+    "participants": [
+      {
+        "username": "pcmbrown",
+        "position": "PRO",
+        "points": 90,
+        "status": "Winning"
+      },
+      {
+        "username": "mongeese",
+        "position": "CON",
+        "points": 84,
+        "status": "Losing"
+      }
+    ],
+    "total_votes": 31,
+    "valid_transitions": 23,
+    "switchers": 5,
+    "switch_rate": 0.2174,
+    "transitions": {
+      "PRO -> PRO": 7,
+      "PRO -> CON": 1,
+      "CON -> PRO": 4,
+      "CON -> CON": 11
+    }
+  },
+  {
+    "id": "178bc50e45d459",
+    "title": ".999... is exactly equal to 1",
+    "category": "Science",
+    "start_date": "9/14/2008",
+    "participants": [
+      {
+        "username": "Biowza",
+        "position": "PRO",
+        "points": 114,
+        "status": "Winning"
+      },
+      {
+        "username": "CoronerPerry",
+        "position": "CON",
+        "points": 41,
+        "status": "Losing"
+      }
+    ],
+    "total_votes": 28,
+    "valid_transitions": 22,
+    "switchers": 5,
+    "switch_rate": 0.2273,
+    "transitions": {
+      "PRO -> PRO": 10,
+      "PRO -> CON": 1,
+      "CON -> PRO": 4,
+      "CON -> CON": 7
+    }
+  },
+  {
+    "id": "9971f7a72c2b3c",
+    "title": "LD international Court Resolution",
+    "category": "Politics",
+    "start_date": "1/2/2009",
+    "participants": [
+      {
+        "username": "Metz",
+        "position": "PRO",
+        "points": 67,
+        "status": "Winning"
+      },
+      {
+        "username": "ToastOfDestiny",
+        "position": "CON",
+        "points": 52,
+        "status": "Losing"
+      }
+    ],
+    "total_votes": 21,
+    "valid_transitions": 17,
+    "switchers": 6,
+    "switch_rate": 0.3529,
+    "transitions": {
+      "PRO -> PRO": 7,
+      "PRO -> CON": 4,
+      "CON -> PRO": 2,
+      "CON -> CON": 4
+    }
+  },
+  {
+    "id": "ef12ace715c45e",
+    "title": "A Crowbar is the best weapon to have during a Zombie Uprising.",
+    "category": "Miscellaneous",
+    "start_date": "3/1/2010",
+    "participants": [
+      {
+        "username": "left_wing_mormon",
+        "position": "PRO",
+        "points": 21,
+        "status": "Losing"
+      },
+      {
+        "username": "Korashk",
+        "position": "CON",
+        "points": 105,
+        "status": "Winning"
+      }
+    ],
+    "total_votes": 23,
+    "valid_transitions": 17,
+    "switchers": 6,
+    "switch_rate": 0.3529,
+    "transitions": {
+      "PRO -> PRO": 3,
+      "PRO -> CON": 6,
+      "CON -> PRO": 0,
+      "CON -> CON": 8
+    }
+  },
+  {
+    "id": "f38f0ef578e5e9",
+    "title": "With 30 minutes of preparation, the user known as Kleptin could feasibly vanquish a grizzly bear",
+    "category": "Miscellaneous",
+    "start_date": "5/5/2009",
+    "participants": [
+      {
+        "username": "Logical-Master",
+        "position": "PRO",
+        "points": 64,
+        "status": "Losing"
+      },
+      {
+        "username": "Kleptin",
+        "position": "CON",
+        "points": 71,
+        "status": "Winning"
+      }
+    ],
+    "total_votes": 27,
+    "valid_transitions": 16,
+    "switchers": 6,
+    "switch_rate": 0.375,
+    "transitions": {
+      "PRO -> PRO": 6,
+      "PRO -> CON": 5,
+      "CON -> PRO": 1,
+      "CON -> CON": 4
+    }
+  },
+  {
+    "id": "c9c6010f5627ee",
+    "title": "It's nearly impossible to win a one round debate.",
+    "category": "Miscellaneous",
+    "start_date": "5/28/2009",
+    "participants": [
+      {
+        "username": "Tatarize",
+        "position": "PRO",
+        "points": 40,
+        "status": "Losing"
+      },
+      {
+        "username": "dvhoose",
+        "position": "CON",
+        "points": 68,
+        "status": "Winning"
+      }
+    ],
+    "total_votes": 19,
+    "valid_transitions": 14,
+    "switchers": 8,
+    "switch_rate": 0.5714,
+    "transitions": {
+      "PRO -> PRO": 4,
+      "PRO -> CON": 7,
+      "CON -> PRO": 1,
+      "CON -> CON": 2
+    }
+  },
+  {
+    "id": "5ed066f438ffed",
+    "title": "Hannah Montana is the Worst singer",
+    "category": "Entertainment",
+    "start_date": "10/19/2008",
+    "participants": [
+      {
+        "username": "top_contributor",
+        "position": "PRO",
+        "points": 7,
+        "status": "Losing"
+      },
+      {
+        "username": "Wayne",
+        "position": "CON",
+        "points": 88,
+        "status": "Winning"
+      }
+    ],
+    "total_votes": 15,
+    "valid_transitions": 14,
+    "switchers": 5,
+    "switch_rate": 0.3571,
+    "transitions": {
+      "PRO -> PRO": 2,
+      "PRO -> CON": 5,
+      "CON -> PRO": 0,
+      "CON -> CON": 7
+    }
+  },
+  {
+    "id": "907e23c92f2d4c",
+    "title": "If a penguin and a polar bear were in a fight the polar bear would win.",
+    "category": "Entertainment",
+    "start_date": "12/3/2009",
+    "participants": [
+      {
+        "username": "ehouse",
+        "position": "PRO",
+        "points": 14,
+        "status": "Losing"
+      },
+      {
+        "username": "Nails",
+        "position": "CON",
+        "points": 82,
+        "status": "Winning"
+      }
+    ],
+    "total_votes": 16,
+    "valid_transitions": 13,
+    "switchers": 5,
+    "switch_rate": 0.3846,
+    "transitions": {
+      "PRO -> PRO": 2,
+      "PRO -> CON": 5,
+      "CON -> PRO": 0,
+      "CON -> CON": 6
+    }
+  },
+  {
+    "id": "eb67e823cb77a9",
+    "title": "Heroin should be made legal",
+    "category": "Politics",
+    "start_date": "4/27/2010",
+    "participants": [
+      {
+        "username": "Sam_Lowry",
+        "position": "PRO",
+        "points": 85,
+        "status": "Winning"
+      },
+      {
+        "username": "lilmatt0514",
+        "position": "CON",
+        "points": 7,
+        "status": "Losing"
+      }
+    ],
+    "total_votes": 14,
+    "valid_transitions": 12,
+    "switchers": 5,
+    "switch_rate": 0.4167,
+    "transitions": {
+      "PRO -> PRO": 4,
+      "PRO -> CON": 1,
+      "CON -> PRO": 4,
+      "CON -> CON": 3
+    }
+  },
+  {
+    "id": "f2c428d1a6ba63",
+    "title": "Resolved: The United States ought to submit to the jurisdiction of an international court designed t",
+    "category": "Politics",
+    "start_date": "1/1/2009",
+    "participants": [
+      {
+        "username": "HeedMyFeed",
+        "position": "PRO",
+        "points": 20,
+        "status": "Losing"
+      },
+      {
+        "username": "fresnoinvasion",
+        "position": "CON",
+        "points": 50,
+        "status": "Winning"
+      }
+    ],
+    "total_votes": 12,
+    "valid_transitions": 11,
+    "switchers": 6,
+    "switch_rate": 0.5455,
+    "transitions": {
+      "PRO -> PRO": 1,
+      "PRO -> CON": 3,
+      "CON -> PRO": 3,
+      "CON -> CON": 4
+    }
+  },
+  {
+    "id": "3bbe0425a493b0",
+    "title": "My Pen is bigger than yours.",
+    "category": "Miscellaneous",
+    "start_date": "3/2/2010",
+    "participants": [
+      {
+        "username": "CrappyDebater",
+        "position": "PRO",
+        "points": 46,
+        "status": "Losing"
+      },
+      {
+        "username": "Nails",
+        "position": "CON",
+        "points": 97,
+        "status": "Winning"
+      }
+    ],
+    "total_votes": 26,
+    "valid_transitions": 11,
+    "switchers": 6,
+    "switch_rate": 0.5455,
+    "transitions": {
+      "PRO -> PRO": 1,
+      "PRO -> CON": 6,
+      "CON -> PRO": 0,
+      "CON -> CON": 4
+    }
+  },
+  {
+    "id": "b0408298b42e32",
+    "title": "My Debate.org username is psunsrox",
+    "category": "Miscellaneous",
+    "start_date": "6/2/2010",
+    "participants": [
+      {
+        "username": "psunsrox",
+        "position": "PRO",
+        "points": 4,
+        "status": "Losing"
+      },
+      {
+        "username": "tvellalott",
+        "position": "CON",
+        "points": 83,
+        "status": "Winning"
+      }
+    ],
+    "total_votes": 13,
+    "valid_transitions": 11,
+    "switchers": 5,
+    "switch_rate": 0.4545,
+    "transitions": {
+      "PRO -> PRO": 3,
+      "PRO -> CON": 5,
+      "CON -> PRO": 0,
+      "CON -> CON": 3
+    }
+  },
+  {
+    "id": "18262e06608078",
+    "title": "Half the planets in this solar system have planetary rings.",
+    "category": "Science",
+    "start_date": "5/27/2009",
+    "participants": [
+      {
+        "username": "Tatarize",
+        "position": "PRO",
+        "points": 13,
+        "status": "Losing"
+      },
+      {
+        "username": "alto2osu",
+        "position": "CON",
+        "points": 97,
+        "status": "Winning"
+      }
+    ],
+    "total_votes": 19,
+    "valid_transitions": 10,
+    "switchers": 7,
+    "switch_rate": 0.7,
+    "transitions": {
+      "PRO -> PRO": 1,
+      "PRO -> CON": 7,
+      "CON -> PRO": 0,
+      "CON -> CON": 2
+    }
+  },
+  {
+    "id": "2a480748cda7b5",
+    "title": "Immigration is changing rural England life",
+    "category": "Society",
+    "start_date": "3/17/2009",
+    "participants": [
+      {
+        "username": "Meganrihanne1992x",
+        "position": "PRO",
+        "points": 7,
+        "status": "Losing"
+      },
+      {
+        "username": "Danielle",
+        "position": "CON",
+        "points": 60,
+        "status": "Winning"
+      }
+    ],
+    "total_votes": 10,
+    "valid_transitions": 10,
+    "switchers": 5,
+    "switch_rate": 0.5,
+    "transitions": {
+      "PRO -> PRO": 1,
+      "PRO -> CON": 5,
+      "CON -> PRO": 0,
+      "CON -> CON": 4
+    }
+  },
+  {
+    "id": "0da26dd7cfc302",
+    "title": "The penny should be immediately discontinued.",
+    "category": "Society",
+    "start_date": "8/22/2008",
+    "participants": [
+      {
+        "username": "SportsGuru",
+        "position": "PRO",
+        "points": 77,
+        "status": "Winning"
+      },
+      {
+        "username": "Ironhead56",
+        "position": "CON",
+        "points": 11,
+        "status": "Losing"
+      }
+    ],
+    "total_votes": 18,
+    "valid_transitions": 10,
+    "switchers": 4,
+    "switch_rate": 0.4,
+    "transitions": {
+      "PRO -> PRO": 4,
+      "PRO -> CON": 0,
+      "CON -> PRO": 4,
+      "CON -> CON": 2
+    }
+  },
+  {
+    "id": "243e3b4ecce32e",
+    "title": "Mutilating dogs for aesthetic reasons",
+    "category": "Society",
+    "start_date": "4/9/2009",
+    "participants": [
+      {
+        "username": "TheSkeptic",
+        "position": "PRO",
+        "points": 40,
+        "status": "Winning"
+      },
+      {
+        "username": "newc_25",
+        "position": "CON",
+        "points": 14,
+        "status": "Losing"
+      }
+    ],
+    "total_votes": 11,
+    "valid_transitions": 10,
+    "switchers": 4,
+    "switch_rate": 0.4,
+    "transitions": {
+      "PRO -> PRO": 3,
+      "PRO -> CON": 1,
+      "CON -> PRO": 3,
+      "CON -> CON": 3
+    }
+  },
+  {
+    "id": "8977849f32f90c",
+    "title": "Legos are better than Megablox",
+    "category": "Entertainment",
+    "start_date": "11/2/2009",
+    "participants": [
+      {
+        "username": "mcol",
+        "position": "PRO",
+        "points": 28,
+        "status": "Losing"
+      },
+      {
+        "username": "Freeman",
+        "position": "CON",
+        "points": 39,
+        "status": "Winning"
+      }
+    ],
+    "total_votes": 11,
+    "valid_transitions": 10,
+    "switchers": 4,
+    "switch_rate": 0.4,
+    "transitions": {
+      "PRO -> PRO": 6,
+      "PRO -> CON": 4,
+      "CON -> PRO": 0,
+      "CON -> CON": 0
+    }
+  },
+  {
+    "id": "3e05cb9eec03b8",
+    "title": "It should be legal to murder prostitutes",
+    "category": "Society",
+    "start_date": "3/23/2010",
+    "participants": [
+      {
+        "username": "Korashk",
+        "position": "PRO",
+        "points": 84,
+        "status": "Winning"
+      },
+      {
+        "username": "TobehMickwah",
+        "position": "CON",
+        "points": 6,
+        "status": "Losing"
+      }
+    ],
+    "total_votes": 16,
+    "valid_transitions": 10,
+    "switchers": 4,
+    "switch_rate": 0.4,
+    "transitions": {
+      "PRO -> PRO": 1,
+      "PRO -> CON": 0,
+      "CON -> PRO": 4,
+      "CON -> CON": 5
+    }
+  },
+  {
+    "id": "813c07b205d877",
+    "title": "If a tree falls in a forest and there is nobody there to hear it, it does not make a sound.",
+    "category": "Science",
+    "start_date": "11/9/2010",
+    "participants": [
+      {
+        "username": "Danielle",
+        "position": "PRO",
+        "points": 55,
+        "status": "Winning"
+      },
+      {
+        "username": "TheLaw",
+        "position": "CON",
+        "points": 19,
+        "status": "Losing"
+      }
+    ],
+    "total_votes": 16,
+    "valid_transitions": 10,
+    "switchers": 4,
+    "switch_rate": 0.4,
+    "transitions": {
+      "PRO -> PRO": 2,
+      "PRO -> CON": 1,
+      "CON -> PRO": 3,
+      "CON -> CON": 4
+    }
+  },
+  {
+    "id": "dd682ee0858599",
+    "title": "Giving Murderers the Death Sentence should be illegal",
+    "category": "Politics",
+    "start_date": "5/31/2009",
+    "participants": [
+      {
+        "username": "Zealotical",
+        "position": "PRO",
+        "points": 7,
+        "status": "Losing"
+      },
+      {
+        "username": "dvhoose",
+        "position": "CON",
+        "points": 64,
+        "status": "Winning"
+      }
+    ],
+    "total_votes": 12,
+    "valid_transitions": 10,
+    "switchers": 4,
+    "switch_rate": 0.4,
+    "transitions": {
+      "PRO -> PRO": 2,
+      "PRO -> CON": 4,
+      "CON -> PRO": 0,
+      "CON -> CON": 4
+    }
+  }
+]

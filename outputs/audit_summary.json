@@ -1,0 +1,238 @@
+{
+  "generated_at_utc": "2026-09-20T19:35:01.543091+00:00",
+  "source": "D:\\UVA\\26Fall\\2. DS 7400 Deep Learning\\DDO_dataset\\01_rawdata\\debates.json",
+  "definitions": {
+    "valid_transition": "Exactly one participant (PRO or CON) selected both before and after; ties, missing selections, and contradictory selections are excluded.",
+    "switcher": "A valid transition where before stance differs from after stance."
+  },
+  "counts": {
+    "debates": 78376,
+    "votes": 199210,
+    "votes_valid_before": 68013,
+    "votes_valid_after": 72717,
+    "votes_valid_before_and_after": 66297,
+    "switchers": 4239,
+    "debates_with_votes": 48887,
+    "debates_with_valid_transitions": 26117
+  },
+  "before_labels": {
+    "TIE": 127711,
+    "PRO": 31239,
+    "CON": 36774,
+    "UNKNOWN": 3486
+  },
+  "after_labels": {
+    "TIE": 123007,
+    "CON": 40324,
+    "PRO": 32393,
+    "UNKNOWN": 3486
+  },
+  "strict_transitions": {
+    "PRO -> PRO": 27844,
+    "PRO -> CON": 2480,
+    "CON -> PRO": 1759,
+    "CON -> CON": 34214
+  },
+  "overall_switch_rate": 0.06394,
+  "usable_debates_by_minimum_valid_voters": {
+    "1": 26117,
+    "5": 3353,
+    "10": 835,
+    "20": 125,
+    "50": 6
+  },
+  "valid_voters_per_debate": {
+    "median": 0.0,
+    "p75": 1.0,
+    "p90": 2.0,
+    "p95": 4.0,
+    "p99": 10.0,
+    "max": 317.0
+  },
+  "switch_rate_among_debates_with_valid_transitions": {
+    "median": 0.0,
+    "p75": 0.0,
+    "p90": 0.1667,
+    "max": 1.0
+  },
+  "categories": {
+    "Arts": {
+      "debates": 1163,
+      "valid_transitions": 800,
+      "switchers": 80
+    },
+    "Cars": {
+      "debates": 311,
+      "valid_transitions": 40,
+      "switchers": 3
+    },
+    "Economics": {
+      "debates": 1899,
+      "valid_transitions": 818,
+      "switchers": 42
+    },
+    "Education": {
+      "debates": 5568,
+      "valid_transitions": 3600,
+      "switchers": 247
+    },
+    "Entertainment": {
+      "debates": 4157,
+      "valid_transitions": 3832,
+      "switchers": 416
+    },
+    "Fashion": {
+      "debates": 265,
+      "valid_transitions": 63,
+      "switchers": 7
+    },
+    "Funny": {
+      "debates": 1394,
+      "valid_transitions": 310,
+      "switchers": 35
+    },
+    "Games": {
+      "debates": 1758,
+      "valid_transitions": 387,
+      "switchers": 24
+    },
+    "Health": {
+      "debates": 3182,
+      "valid_transitions": 2820,
+      "switchers": 186
+    },
+    "Miscellaneous": {
+      "debates": 6277,
+      "valid_transitions": 7224,
+      "switchers": 686
+    },
+    "Movies": {
+      "debates": 444,
+      "valid_transitions": 94,
+      "switchers": 8
+    },
+    "Music": {
+      "debates": 771,
+      "valid_transitions": 132,
+      "switchers": 12
+    },
+    "News": {
+      "debates": 685,
+      "valid_transitions": 642,
+      "switchers": 46
+    },
+    "People": {
+      "debates": 2744,
+      "valid_transitions": 894,
+      "switchers": 32
+    },
+    "Philosophy": {
+      "debates": 5246,
+      "valid_transitions": 2823,
+      "switchers": 111
+    },
+    "Places-Travel": {
+      "debates": 177,
+      "valid_transitions": 42,
+      "switchers": 1
+    },
+    "Politics": {
+      "debates": 15278,
+      "valid_transitions": 14712,
+      "switchers": 864
+    },
+    "Religion": {
+      "debates": 10287,
+      "valid_transitions": 11750,
+      "switchers": 437
+    },
+    "Science": {
+      "debates": 4583,
+      "valid_transitions": 4179,
+      "switchers": 225
+    },
+    "Society": {
+      "debates": 7867,
+      "valid_transitions": 8524,
+      "switchers": 580
+    },
+    "Sports": {
+      "debates": 2267,
+      "valid_transitions": 1356,
+      "switchers": 103
+    },
+    "TV": {
+      "debates": 398,
+      "valid_transitions": 91,
+      "switchers": 5
+    },
+    "Technology": {
+      "debates": 1655,
+      "valid_transitions": 1164,
+      "switchers": 89
+    }
+  },
+  "years": {
+    "2007": {
+      "debates": 1015,
+      "valid_transitions": 840,
+      "switchers": 68
+    },
+    "2008": {
+      "debates": 4084,
+      "valid_transitions": 9390,
+      "switchers": 662
+    },
+    "2009": {
+      "debates": 3202,
+      "valid_transitions": 15853,
+      "switchers": 1408
+    },
+    "2010": {
+      "debates": 2503,
+      "valid_transitions": 9068,
+      "switchers": 689
+    },
+    "2011": {
+      "debates": 4176,
+      "valid_transitions": 5819,
+      "switchers": 246
+    },
+    "2012": {
+      "debates": 6399,
+      "valid_transitions": 5567,
+      "switchers": 279
+    },
+    "2013": {
+      "debates": 10726,
+      "valid_transitions": 6782,
+      "switchers": 320
+    },
+    "2014": {
+      "debates": 15576,
+      "valid_transitions": 7530,
+      "switchers": 304
+    },
+    "2015": {
+      "debates": 11634,
+      "valid_transitions": 3300,
+      "switchers": 132
+    },
+    "2016": {
+      "debates": 9710,
+      "valid_transitions": 1446,
+      "switchers": 88
+    },
+    "2017": {
+      "debates": 5148,
+      "valid_transitions": 479,
+      "switchers": 36
+    },
+    "2018": {
+      "debates": 4203,
+      "valid_transitions": 223,
+      "switchers": 7
+    }
+  },
+  "selected_sample_debates": 51
+}

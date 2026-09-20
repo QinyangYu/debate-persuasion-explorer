@@ -1,0 +1,23 @@
+# Frontend build/dependencies
+frontend/node_modules/
+frontend/dist/
+
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Runtime database
+backend/data/*.db
+backend/data/*.db-*
+
+# Raw and temporary data (never commit the 1+ GB source files)
+DDO_dataset/
+*.zip
+tmp/
+
+# Local editor and OS files
+.DS_Store
+.vscode/
+.idea/
