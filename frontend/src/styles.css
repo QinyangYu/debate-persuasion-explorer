@@ -89,6 +89,12 @@ select:focus, textarea:focus, .search-wrap:focus-within { border-color: var(--pr
 .pro-text b { color: var(--pro); }
 .con-text b { color: var(--con); }
 .source-link { flex: 0 0 auto; color: var(--ink); border-bottom: 1px solid var(--ink); text-decoration: none; font-size: 11px; font-weight: 700; }
+.source-stack { flex: 0 0 auto; display: flex; flex-direction: column; align-items: flex-end; gap: 4px; text-align: right; }
+.dataset-citation { color: var(--pro); text-decoration: none; font-size: 9px; font-weight: 700; }
+.dataset-citation:hover { text-decoration: underline; }
+.original-citation { color: var(--ink-soft); text-decoration: none; font-size: 8.5px; font-weight: 600; }
+.original-citation:hover { text-decoration: underline; }
+.source-stack small { color: #7a8b92; font-size: 8px; }
 
 .summary-strip { display: grid; grid-template-columns: 180px 1fr 210px; align-items: stretch; min-height: 98px; overflow: hidden; }
 .summary-primary { display: flex; flex-direction: column; justify-content: center; padding: 14px 18px; color: #fff; background: var(--ink); }

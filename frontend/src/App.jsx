@@ -188,15 +188,36 @@ export default function App() {
                     ))}
                   </div>
                 </div>
-                <a
-                  className="source-link"
-                  href={`/data/debates/${debate.id}.json`}
-                  target="_blank"
-                  rel="noreferrer"
-                  title="Open the processed dataset record used by this viewer"
-                >
-                  Dataset record ↗
-                </a>
+                <div className="source-stack">
+                  <a
+                    className="source-link"
+                    href={`/data/debates/${debate.id}.json`}
+                    target="_blank"
+                    rel="noreferrer"
+                    title="Open the processed dataset record used by this viewer"
+                  >
+                    Dataset record ↗
+                  </a>
+                  <a
+                    className="dataset-citation"
+                    href="https://doi.org/10.6084/m9.figshare.28326899"
+                    target="_blank"
+                    rel="noreferrer"
+                    title="Figshare page from which the project data files were downloaded"
+                  >
+                    Downloaded from Figshare · record 28326899
+                  </a>
+                  <a
+                    className="original-citation"
+                    href="https://aclanthology.org/P19-1057/"
+                    target="_blank"
+                    rel="noreferrer"
+                    title="Original DDO corpus paper"
+                  >
+                    Original DDO data: Durmus &amp; Cardie
+                  </a>
+                  <small>Collected from Debate.org · 2007–2017</small>
+                </div>
               </section>
 
               <SummaryStrip summary={debate.summary} />
@@ -261,7 +282,7 @@ export default function App() {
       </main>
 
       <footer>
-        <span>Descriptive viewer · no causal claims</span>
+        <span>Access: Figshare record 28326899 · Original DDO: Durmus &amp; Cardie</span>
         <span>66,297 valid before/after transitions audited from DDO</span>
       </footer>
     </div>

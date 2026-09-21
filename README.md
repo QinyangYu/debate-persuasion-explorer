@@ -10,6 +10,10 @@ The viewer is descriptive. A before/after difference is an **observed position c
 
 The project uses the DDO dataset collected from Debate.org by Esin Durmus and Claire Cardie. The raw files include debate metadata, full argument rounds, audience votes, and user profiles.
 
+**Access source:** The files used for this project were downloaded from the Figshare record [Dataset for “Neural embedding of beliefs reveals the role of relative dissonance in human decision-making”](https://doi.org/10.6084/m9.figshare.28326899). That record republishes `DDO_dataset.zip` for reproducibility and explicitly credits the original dataset to Esin Durmus and Claire Cardie.
+
+**Original dataset attribution:** DDO Dataset, Version 2.0 (Durmus & Cardie), collected from Debate.org from October 2007 through November 2017. The corpus is described in [A Corpus for Modeling User and Language Effects in Argumentation on Online Debating](https://aclanthology.org/P19-1057/) (ACL 2019) and [Exploring the Role of Prior Beliefs for Argument Persuasion](https://aclanthology.org/N18-1094/) (NAACL 2018). Consult both the Figshare record and the original DDO documentation for the applicable reuse terms.
+
 The preprocessing script streamed through the supplied raw files and found:
 
 | Audit measure | Result |
