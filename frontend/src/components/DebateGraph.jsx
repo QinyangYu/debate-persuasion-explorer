@@ -91,7 +91,9 @@ export default function DebateGraph({ debate, mode, selectedVoter, onSelectVoter
           </filter>
         </defs>
         <g className="edges">
-          {positioned.map((voter) => <line key={voter.username} x1={WIDTH / 2} y1={HEIGHT / 2} x2={voter.x} y2={voter.y} />)}
+          {positioned
+            .filter((voter) => voter.username === selectedVoter?.username || voter.username === hovered?.username)
+            .map((voter) => <line className="focused-voter-edge" key={voter.username} x1={WIDTH / 2} y1={HEIGHT / 2} x2={voter.x} y2={voter.y} />)}
           <line className="participant-edge pro" x1={WIDTH / 2} y1={HEIGHT / 2} x2={205} y2={HEIGHT / 2} />
           <line className="participant-edge con" x1={WIDTH / 2} y1={HEIGHT / 2} x2={695} y2={HEIGHT / 2} />
         </g>

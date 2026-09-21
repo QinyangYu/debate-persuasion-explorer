@@ -188,7 +188,15 @@ export default function App() {
                     ))}
                   </div>
                 </div>
-                <a className="source-link" href={debate.url} target="_blank" rel="noreferrer">Original record ↗</a>
+                <a
+                  className="source-link"
+                  href={`/data/debates/${debate.id}.json`}
+                  target="_blank"
+                  rel="noreferrer"
+                  title="Open the processed dataset record used by this viewer"
+                >
+                  Dataset record ↗
+                </a>
               </section>
 
               <SummaryStrip summary={debate.summary} />
@@ -221,7 +229,7 @@ export default function App() {
                     </div>
                   </div>
                   <div className="graph-caption">
-                    <span><b>Thin lines</b> voter participated in this vote</span>
+                    <span><b>Selected line</b> this voter voted on the debate</span>
                     <span><b>Colored dashed lines</b> PRO/CON debater role</span>
                     <span><b>Two voter rings</b> spacing only</span>
                     <span><b>Gold outline</b> stance changed</span>

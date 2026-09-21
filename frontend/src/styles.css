@@ -129,6 +129,7 @@ select:focus, textarea:focus, .search-wrap:focus-within { border-color: var(--pr
 .graph-stage svg { width: 100%; height: 100%; cursor: grab; touch-action: none; user-select: none; }
 .graph-stage svg:active { cursor: grabbing; }
 .edges line { stroke: #b9c4c6; stroke-width: .7; stroke-opacity: .44; }
+.edges .focused-voter-edge { stroke: #738991; stroke-width: 1.5; stroke-opacity: .72; }
 .edges .participant-edge { stroke-width: 2; stroke-opacity: .55; stroke-dasharray: 5 4; }
 .edges .participant-edge.pro { stroke: var(--pro); }
 .edges .participant-edge.con { stroke: var(--con); }
