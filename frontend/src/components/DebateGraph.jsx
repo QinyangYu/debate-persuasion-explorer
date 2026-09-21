@@ -144,7 +144,7 @@ export default function DebateGraph({ debate, mode, selectedVoter, onSelectVoter
           </g>
         )}
       </svg>
-      <div className="graph-help">Scroll to zoom · drag canvas to pan · click a voter to inspect</div>
+      <div className="graph-help">Scroll to zoom · drag to pan · click a voter</div>
       <button className="reset-view" onClick={resetView}>Reset view</button>
     </div>
   )

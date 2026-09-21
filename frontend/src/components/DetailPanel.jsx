@@ -49,17 +49,18 @@ export default function DetailPanel({ voter, profile, annotation, onSave, backen
       </div>
       {profile && (
         <div className="profile-grid">
-          <div><span>Political view</span><b>{profile.political_ideology || 'Not available'}</b></div>
-          <div><span>Elo ranking</span><b>{profile.elo_ranking || 'Not available'}</b></div>
-          <div><span>Debates entered</span><b>{profile.number_of_all_debates}</b></div>
-          <div><span>Debates voted</span><b>{profile.number_of_voted_debates}</b></div>
+          <div title="Political ideology self-reported on the user's Debate.org profile"><span>Self-reported politics</span><b>{profile.political_ideology || 'Not available'}</b></div>
+          <div title="Debate.org's Elo-style participant rating"><span>Debate.org Elo</span><b>{profile.elo_ranking || 'Not available'}</b></div>
+          <div title="Number of debates in which this user was a debater"><span>As participant</span><b>{profile.number_of_all_debates}</b></div>
+          <div title="Number of debates on which this user cast a vote"><span>Votes cast</span><b>{profile.number_of_voted_debates}</b></div>
         </div>
       )}
       <form className="annotation-form" onSubmit={submit}>
         <div className="annotation-title">
-          <div><span className="step-label">+10</span><h3>Research annotation</h3></div>
-          <small>{backendOnline ? 'SQLite' : 'Local'}</small>
+          <div><h3>Research annotation</h3></div>
+          <small title="Where this optional manual label and note will be stored">{backendOnline ? 'SQLite' : 'Local'}</small>
         </div>
+        <p className="annotation-help">Optional manual label and note for later research review.</p>
         <label>
           <span>Label</span>
           <select value={label} onChange={(event) => setLabel(event.target.value)}>

@@ -143,7 +143,7 @@ export default function App() {
               <span className="step-label">01</span>
               <h2>Choose a debate</h2>
             </div>
-            <span className="count-badge">{filteredIndex.length}</span>
+            <span className="count-badge" title="Curated browser sample, not the full raw dataset">{filteredIndex.length} shown</span>
           </div>
           <label className="field-label" htmlFor="debate-search">Search title or debater</label>
           <div className="search-wrap">
@@ -167,6 +167,9 @@ export default function App() {
               </select>
             </label>
           </div>
+          <p className="sample-note">
+            Curated browser sample · the full audit covers 78,376 debates.
+          </p>
           <DebateList items={filteredIndex} activeId={activeId} onSelect={setActiveId} />
         </aside>
 
@@ -217,6 +220,12 @@ export default function App() {
                       <span><i className="legend-dot other" />Tie / unknown</span>
                     </div>
                   </div>
+                  <div className="graph-caption">
+                    <span><b>Thin lines</b> voter participated in this vote</span>
+                    <span><b>Colored dashed lines</b> PRO/CON debater role</span>
+                    <span><b>Two voter rings</b> spacing only</span>
+                    <span><b>Gold outline</b> stance changed</span>
+                  </div>
                   <DebateGraph
                     debate={debate}
                     mode={mode}
@@ -237,7 +246,7 @@ export default function App() {
                 />
               </section>
 
-              <RoundViewer rounds={debate.rounds} />
+              <RoundViewer key={debate.id} rounds={debate.rounds} participants={debate.participants} />
             </>
           ) : <div className="panel page-state">Loading selected debate…</div>}
         </section>

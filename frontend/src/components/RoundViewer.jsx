@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-export default function RoundViewer({ rounds }) {
+export default function RoundViewer({ rounds, participants }) {
   const [activeRound, setActiveRound] = useState(1)
   const selected = rounds.find((round) => round.round === activeRound) || rounds[0]
 
@@ -9,8 +9,8 @@ export default function RoundViewer({ rounds }) {
       <div className="round-header">
         <div>
           <span className="step-label">04</span>
-          <h2>Read the debate arguments</h2>
-          <p>The same text can become the input to a later Transformer model.</p>
+          <h2>Read the full debate arguments</h2>
+          <p>Full recorded source text for the selected debate; scroll each side and switch rounds.</p>
         </div>
         <div className="round-tabs">
           {rounds.map((round) => (
@@ -24,9 +24,10 @@ export default function RoundViewer({ rounds }) {
         <div className="arguments-grid">
           {['PRO', 'CON'].map((side) => {
             const argument = selected.arguments.find((item) => item.side === side)
+            const participant = participants?.find((item) => item.position === side)
             return (
               <article className={`argument ${side.toLowerCase()}`} key={side}>
-                <header><span>{side}</span><small>{(argument?.text || '').split(/\s+/).filter(Boolean).length} words</small></header>
+                <header><span>{side} · {participant?.username || 'Unknown participant'}</span><small>{(argument?.text || '').split(/\s+/).filter(Boolean).length} words</small></header>
                 <div className="argument-text">{argument?.text || 'No argument recorded for this side.'}</div>
               </article>
             )

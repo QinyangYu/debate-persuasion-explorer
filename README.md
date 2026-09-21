@@ -126,8 +126,8 @@ More context is in [`docs/project-overview.md`](docs/project-overview.md); the s
 - [x] Web-based, useful, interactive data viewer
 - [x] Representative real research data
 - [x] Selection, filtering, navigation, zoom, and pan
-- [x] Interactive node annotation (+10)
-- [x] FastAPI + SQLite backend/database (+10)
+- [x] Interactive node annotation (optional extension implemented)
+- [x] FastAPI + SQLite backend/database (optional extension implemented)
 - [x] README with data, run instructions, libraries, features, and implementation status
 - [ ] Student records and submits the maximum three-minute live demo video
 - [ ] Student creates/pushes the GitHub repository and submits its link
