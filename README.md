@@ -122,18 +122,3 @@ docker-compose.yml    optional full-stack local launch
 ## Future deep-learning direction
 
 The next step is a transparent baseline using only information available before the outcome. Later, argument text can be encoded with a Transformer and combined with user-history representations. A graph model may eventually incorporate network context. Post-debate agreement and other outcome-revealing fields must never be used as predictive inputs.
-
-More context is in [`docs/project-overview.md`](docs/project-overview.md); the submission recording outline is in [`docs/demo-script.md`](docs/demo-script.md).
-
-## HW1 grading checklist
-
-- [x] Web-based, useful, interactive data viewer
-- [x] Representative real research data
-- [x] Selection, filtering, navigation, zoom, and pan
-- [x] Interactive node annotation (optional extension implemented)
-- [x] FastAPI + SQLite backend/database (optional extension implemented)
-- [x] README with data, run instructions, libraries, features, and implementation status
-- [ ] Student records and submits the maximum three-minute live demo video
-- [ ] Student creates/pushes the GitHub repository and submits its link
-
-AI coding assistance was used to implement and proofread this project. The project owner should understand the data pipeline, components, libraries, interactions, and run commands before submission.
