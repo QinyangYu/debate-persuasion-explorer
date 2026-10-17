@@ -10,6 +10,10 @@ from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
+from backend.model_service import ModelService
+from backend.training_service import TrainingService
+from training.train import TrainConfig
+
 
 DEFAULT_DB = Path(__file__).resolve().parent / "data" / "annotations.db"
 DB_PATH = Path(os.environ.get("DPE_DB_PATH", DEFAULT_DB))
@@ -24,6 +28,20 @@ class Annotation(AnnotationInput):
     debate_id: str
     username: str
     updated_at: str
+
+
+class PredictionInput(BaseModel):
+    debate_id: str = Field(min_length=1, max_length=100)
+    username: str = Field(min_length=1, max_length=200)
+
+
+class TrainingInput(BaseModel):
+    learning_rate: float = Field(default=0.001, ge=0.00001, le=0.05)
+    epochs: int = Field(default=150, ge=5, le=200)
+    hidden_units: int = Field(default=64, ge=8, le=256)
+    hidden_layers: int = Field(default=1, ge=1, le=4)
+    activation: str = Field(default="tanh", pattern="^(relu|tanh|gelu)$")
+    batch_size: int = Field(default=128, ge=16, le=256)
 
 
 def connect() -> sqlite3.Connection:
@@ -59,9 +77,12 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
     allow_credentials=True,
-    allow_methods=["GET", "PUT", "DELETE"],
+    allow_methods=["GET", "POST", "PUT", "DELETE"],
     allow_headers=["*"],
 )
+
+model_service = ModelService()
+training_service = TrainingService(model_service)
 
 
 @app.on_event("startup")
@@ -72,7 +93,41 @@ def startup() -> None:
 @app.get("/api/health")
 def health() -> dict[str, str]:
     initialize_database()
-    return {"status": "ok", "database": str(DB_PATH)}
+    return {
+        "status": "ok",
+        "database": str(DB_PATH),
+        "model": "ready" if model_service.ready else "missing",
+    }
+
+
+@app.get("/api/model")
+def model_info() -> dict:
+    return model_service.info()
+
+
+@app.post("/api/predict")
+def predict(payload: PredictionInput) -> dict:
+    try:
+        return model_service.predict(payload.debate_id, payload.username)
+    except KeyError as error:
+        raise HTTPException(status_code=404, detail=str(error)) from error
+    except ValueError as error:
+        raise HTTPException(status_code=422, detail=str(error)) from error
+    except RuntimeError as error:
+        raise HTTPException(status_code=503, detail=str(error)) from error
+
+
+@app.get("/api/training/status")
+def training_status() -> dict:
+    return training_service.status()
+
+
+@app.post("/api/training/start", status_code=202)
+def start_training(payload: TrainingInput) -> dict:
+    try:
+        return training_service.start(TrainConfig(**payload.model_dump()))
+    except RuntimeError as error:
+        raise HTTPException(status_code=409, detail=str(error)) from error
 
 
 @app.get("/api/annotations", response_model=list[Annotation])

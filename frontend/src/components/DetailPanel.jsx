@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 
 const labels = ['Needs review', 'Notable switch', 'Stable stance', 'Exclude later']
 
-export default function DetailPanel({ voter, profile, annotation, onSave, backendOnline }) {
+export default function DetailPanel({ voter, profile, annotation, onSave, backendOnline, prediction, predictionLoading, predictionError }) {
   const [label, setLabel] = useState('Needs review')
   const [note, setNote] = useState('')
   const [message, setMessage] = useState('')
@@ -55,6 +55,39 @@ export default function DetailPanel({ voter, profile, annotation, onSave, backen
           <div title="Number of debates on which this user cast a vote"><span>Votes cast</span><b>{profile.number_of_voted_debates}</b></div>
         </div>
       )}
+      <section className="prediction-card">
+        <div className="prediction-title"><h3>MLP prediction</h3></div>
+        {predictionLoading && <p className="prediction-state">Running inference…</p>}
+        {predictionError && <p className="prediction-state error">{predictionError}</p>}
+        {prediction && !predictionLoading && (
+          <>
+            <div className="prediction-primary">
+              <span>Predicted result</span>
+              <strong>{prediction.predicted_class} · {prediction.predicted_transition}</strong>
+            </div>
+            <div className="probability-row"><span>Switch probability</span><b>{(prediction.switch_probability * 100).toFixed(1)}%</b></div>
+            <div className="probability-track"><i style={{ width: `${prediction.switch_probability * 100}%` }} /></div>
+            <div className="probability-classes">
+              {Object.entries(prediction.probabilities).map(([name, probability]) => <span key={name}><i>{name.replaceAll(' ', '')}</i><b>{(probability * 100).toFixed(1)}%</b></span>)}
+            </div>
+            <p className={`prediction-check ${prediction.predicted_switched === voter.switched ? 'correct' : 'incorrect'}`}>
+              {prediction.predicted_switched === voter.switched ? '✓ Matches the recorded Switch/Stay outcome' : '✕ Does not match the recorded Switch/Stay outcome'}
+            </p>
+            <details className="model-inputs">
+              <summary>Model inputs used for this prediction</summary>
+              <ul>
+                <li><b>Initial stance:</b> {prediction.before}</li>
+                <li><b>Debate:</b> {prediction.input_summary.category}; {prediction.input_summary.rounds} rounds</li>
+                <li><b>Arguments:</b> {prediction.input_summary.pro_argument_words} PRO words and {prediction.input_summary.con_argument_words} CON words, plus separate hashed text vectors</li>
+                <li><b>User profile:</b> politics {prediction.input_summary.political_ideology || 'unavailable'}; religion {prediction.input_summary.religious_ideology || 'unavailable'}; Elo {prediction.input_summary.elo_ranking || 'unavailable'}</li>
+                <li><b>User activity:</b> {prediction.input_summary.debates_as_participant ?? 'unavailable'} debates; {prediction.input_summary.votes_cast ?? 'unavailable'} votes</li>
+              </ul>
+              <small>The recorded after stance and post-debate judging fields are excluded.</small>
+            </details>
+          </>
+        )}
+        {!prediction && !predictionLoading && !predictionError && <p className="prediction-state">Start the backend and train the model to enable inference.</p>}
+      </section>
       <form className="annotation-form" onSubmit={submit}>
         <div className="annotation-title">
           <div><h3>Research annotation</h3></div>

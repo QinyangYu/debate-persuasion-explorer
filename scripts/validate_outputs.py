@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import gzip
 from collections import Counter
 from pathlib import Path
 
@@ -48,9 +49,33 @@ def main() -> None:
         + audit["strict_transitions"]["CON -> PRO"]
         == audit["counts"]["switchers"]
     )
+    metrics_path = PROJECT / "outputs" / "training_metrics.json"
+    model_path = PROJECT / "backend" / "model" / "transition_mlp.pt"
+    assert metrics_path.exists(), "Missing HW2 training metrics"
+    assert model_path.exists(), "Missing trained HW2 weights"
+    metrics = json.loads(metrics_path.read_text(encoding="utf-8"))
+    assert metrics["architecture"]["hidden_layers"] >= 1
+    assert metrics["task"] == "Binary observed stance-change prediction"
+    assert metrics["test"]["switch_recall"] > 0, "Model collapsed to all-Stay predictions"
+    assert (
+        metrics["test"]["balanced_accuracy"]
+        > metrics["baselines"]["logistic_regression"]["test"]["balanced_accuracy"]
+    ), "MLP did not beat the shallow logistic baseline on balanced accuracy"
+    assert metrics["test"]["examples"] == metrics["split"]["test_examples"]
+    assert metrics["split"]["test_debates"] == len(index) == 51
+    assert metrics["split"]["test_examples"] == checked_voters
+    manifest = json.loads(
+        (PROJECT / "training" / "data" / "background_manifest.json").read_text(encoding="utf-8")
+    )
+    assert manifest["showcase_test_debates"] == len(index)
+    assert manifest["background_examples"] + checked_voters == strict_total
+    assert manifest["background_switchers"] + checked_switchers == audit["counts"]["switchers"]
+    with gzip.open(PROJECT / "training" / "data" / "background_profiles.json.gz", "rt", encoding="utf-8") as handle:
+        assert json.load(handle), "Background profile cache is empty"
     print(
         f"Validated {len(index)} debate files, {checked_voters:,} strict sample transitions, "
-        f"and {checked_switchers:,} sample switchers."
+        f"{checked_switchers:,} sample switchers, and a binary MLP that beats the logistic "
+        "baseline on balanced accuracy."
     )
 
 

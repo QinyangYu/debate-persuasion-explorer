@@ -8,7 +8,7 @@ export default function RoundViewer({ rounds, participants }) {
     <section className="round-viewer panel">
       <div className="round-header">
         <div>
-          <span className="step-label">04</span>
+          <span className="step-label">05</span>
           <h2>Read the full debate arguments</h2>
           <p>Full recorded source text for the selected debate; scroll each side and switch rounds.</p>
         </div>

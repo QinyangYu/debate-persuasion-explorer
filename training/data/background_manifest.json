@@ -1,0 +1,18 @@
+{
+  "generated_at_utc": "2026-10-17T00:00:17.455462+00:00",
+  "source_debates": "D:\\UVA\\26Fall\\2. DS 7400 Deep Learning\\DDO_dataset\\01_rawdata\\debates.json",
+  "source_users": "D:\\UVA\\26Fall\\2. DS 7400 Deep Learning\\DDO_dataset\\01_rawdata\\users.json",
+  "policy": "All 51 debates rendered by the application are excluded and reserved for test.",
+  "showcase_test_debates": 51,
+  "background_debates": 26066,
+  "background_examples": 64434,
+  "background_switchers": 4008,
+  "background_switch_rate": 0.062203184654064624,
+  "profiles_matched": 3825,
+  "transition_counts": {
+    "PRO -> PRO": 27050,
+    "CON -> CON": 33376,
+    "PRO -> CON": 2341,
+    "CON -> PRO": 1667
+  }
+}

@@ -1,66 +1,121 @@
 # Debate Persuasion Explorer
 
-An interactive web viewer for examining how Debate.org users' **recorded positions differ before and after online debates**. This is the HW1 foundation for a later deep-learning application that will model personalized stance change from user history, debate text, and potentially network context.
+Debate Persuasion Explorer is an AI-enabled web application for examining and predicting recorded stance change in Debate.org debates. The HW1 viewer remains the main interface; HW2 adds a trained PyTorch multi-layer perceptron, live inference, interactive retraining, and a real-time training monitor.
 
-The viewer is descriptive. A before/after difference is an **observed position change**, not proof that the debate caused persuasion.
+The application uses observational before/after agreement records. A changed record is an **observed stance transition**, not proof that a debate caused persuasion.
 
-![Debate Persuasion Explorer interface](docs/app-screenshot.png)
+## HW2 prediction task
 
-## Data
+The primary roadmap task is binary classification for a voter-debate pair:
 
-The project uses the DDO dataset collected from Debate.org by Esin Durmus and Claire Cardie. The raw files include debate metadata, full argument rounds, audience votes, and user profiles.
+- `STAY` (`PRO -> PRO` or `CON -> CON`)
+- `SWITCH` (`PRO -> CON` or `CON -> PRO`)
 
-**Access source:** The files used for this project were downloaded from the Figshare record [Dataset for “Neural embedding of beliefs reveals the role of relative dissonance in human decision-making”](https://doi.org/10.6084/m9.figshare.28326899). That record republishes `DDO_dataset.zip` for reproducibility and explicitly credits the original dataset to Esin Durmus and Claire Cardie.
+Given the recorded before stance, the app converts the binary prediction back into an interpretable predicted transition. It reports calibrated Stay/Switch probabilities and visibly states whether the prediction matches the recorded outcome.
 
-**Original dataset attribution:** DDO Dataset, Version 2.0 (Durmus & Cardie), collected from Debate.org from October 2007 through November 2017. The corpus is described in [A Corpus for Modeling User and Language Effects in Argumentation on Online Debating](https://aclanthology.org/P19-1057/) (ACL 2019) and [Exploring the Role of Prior Beliefs for Argument Persuasion](https://aclanthology.org/N18-1094/) (NAACL 2018). Consult both the Figshare record and the original DDO documentation for the applicable reuse terms.
+### Model inputs
 
-The preprocessing script streamed through the supplied raw files and found:
+The 130-dimensional input follows the project roadmap's proposed baseline and text-model stages:
 
-| Audit measure | Result |
+- **Initial stance:** one binary feature for the recorded PRO/CON stance before the debate
+- **Debate structure:** category, number of rounds, PRO length, CON length, and argument-length balance
+- **Debate text:** separate 32-dimensional signed feature-hash vectors for the concatenated PRO and CON arguments
+- **Conventional user profile:** self-reported political ideology and religious ideology
+- **User activity:** number of debates as a participant, number of votes cast, Debate.org Elo, and a profile-availability indicator
+
+The exact dimensional breakdown is 9 normalized numeric features, 24 debate-category indicators, 16 political-ideology indicators, 17 religious-ideology indicators, and 64 argument-text hash features (32 per side), totaling 130. Each categorical group includes an `Other` fallback learned from the background training set.
+
+The structured logistic-regression benchmark uses the initial-stance, debate-structure, and profile/activity features. The MLP adds the 64 argument-text features. This is an HW2-scale `M1`-style model: learned belief representations (`M2`) and the combined `M3` comparison remain later roadmap stages. Activity totals are described as overall observed activity, not chronological “prior” activity, because reliable temporal ordering has not been established.
+
+The after stance is used only as the training target. Post-debate judging fields, including “Made more convincing arguments,” are excluded from the input. All voters from the same debate remain in one split so identical debate text cannot cross boundaries. In addition, every debate visible in the application is excluded from both training and validation.
+
+## Neural network and training
+
+The default model is a feed-forward MLP implemented in PyTorch:
+
+```text
+130 input features
+  -> Linear(130, 64) -> Tanh -> Dropout(0.10)
+  -> Linear(64, 2)
+  -> Softmax Stay/Switch probabilities
+```
+
+Training uses inverse-frequency class-weighted cross-entropy, automatic backpropagation, and the Adam gradient-descent optimizer. Model selection uses validation PR-AUC, and the binary decision threshold is selected using validation balanced accuracy. The test set is never used for either choice. The saved artifact contains trained weights, feature normalization values, categorical vocabularies, network configuration, threshold, and evaluation metrics.
+
+The 51-debate browser sample is the fixed final test set: 51 debates, 1,863 strict voter transitions, and 231 switchers. The model is fitted on a compact background cache made from every other DDO debate with a strict transition. A deterministic debate-level split places 22,156 background debates (54,938 voter-debate pairs) in training and 3,910 background debates (9,496 pairs) in validation. Thus a voter prediction shown anywhere in the browser is always a genuine test prediction.
+
+### Default trained-model results
+
+| Measure | Test result |
 |---|---:|
-| Debates | 78,376 |
-| Vote records | 199,210 |
-| Strictly valid before/after transitions | 66,297 |
-| Observed switchers | 4,239 |
-| Overall strict switch rate | 6.39% |
-| Debates with at least 10 valid voters | 835 |
+| MLP accuracy | **70.48%** |
+| MLP balanced accuracy | **68.66%** |
+| MLP balanced error rate | **31.34%** |
+| Switch precision | **24.48%** |
+| Switch recall | **66.23%** |
+| Switch F1 | **35.75%** |
+| Switch PR-AUC | **34.86%** |
+| Logistic baseline accuracy | 47.61% |
+| Logistic baseline balanced accuracy | 57.46% |
+| Logistic baseline balanced error rate | 42.54% |
+| Always-Stay accuracy | 87.60% |
+| Always-Stay Switch recall | 0.00% |
 
-A strict transition requires one unambiguous PRO or CON choice both before and after. Ties, missing selections, and contradictory selections are retained as non-strict labels and excluded from the denominator. See [`outputs/audit_summary.json`](outputs/audit_summary.json) for the complete audit.
+The MLP beats the roadmap's shallow structured logistic-regression benchmark on both raw and balanced accuracy. The always-Stay rule has higher raw accuracy because only 12.4% of the fixed test observations are switchers, but it finds zero switchers. The MLP correctly finds 153 of the 231 test switchers. Full results, the confusion matrix, per-class scores, class weights, decision threshold, and every epoch of the loss history are in [`outputs/training_metrics.json`](outputs/training_metrics.json).
 
-The 1.23 GB `debates.json` and 244 MB `users.json` files are **not committed**. The repository contains a reproducible 51-debate sample (about 2 MB) selected for useful viewer interactions and complete argument text.
+## Application features
 
-## Implemented features
+### HW1 foundation
 
-- Search, category filter, and several sort modes for debate selection
-- Debate metadata, PRO/CON participants, transition matrix, and strict switch rate
-- Interactive heterogeneous network of a debate, debaters, and voter nodes
-- Before/after toggle that changes node color using real recorded stances
-- Mouse-wheel zoom, pointer pan, node hover, node limit, and switcher-only filter
-- Clickable voter detail with exact transition and non-sensitive profile metadata
-- Round-by-round PRO/CON argument viewer
-- Graph-node labels and free-text research notes (**annotation extra credit**)
-- FastAPI + SQLite annotation persistence, with localStorage fallback (**backend/database extra credit**)
-- Docker Compose scaffold for the complete local application
+- Search, category filtering, and debate sorting
+- Interactive debate/debater/voter network
+- Before/after toggle using real recorded stances
+- Voter details, transition counts, and argument text by round
+- Research annotations stored in SQLite or browser storage
 
-No deep-learning model is trained in HW1.
+### HW2 required features
+
+- PyTorch MLP with one configurable hidden layer by default
+- Forward propagation, cross-entropy loss, backpropagation, and Adam updates
+- Saved trained weights at `backend/model/transition_mlp.pt`
+- Training/validation loss history and train/validation/test metrics
+- FastAPI prediction endpoint called directly from the React interface
+- Per-voter Switch/Stay prediction, two class probabilities, and an implied transition
+
+### Optional challenge 1 interactive training
+
+The in-app training lab lets the user change the learning rate, number of epochs, hidden units, hidden layers, activation function (`ReLU`, `Tanh`, or `GELU`), and batch size. Starting a run launches training in a backend worker thread using only background train/validation data. A validation quality gate promotes the candidate only when its validation balanced accuracy, Switch F1, and Switch PR-AUC are all at least as strong as the active model; otherwise the experiment is displayed but the stronger saved model remains active.
+
+### Optional challenge 2 real-time training monitor
+
+While training runs, the interface displays the current epoch, live training and validation loss curves, test accuracy, balanced accuracy, Switch F1, Switch PR-AUC, the logistic-regression comparison, and updated prediction results after the new model becomes active.
 
 ## Run locally
 
 Prerequisites: Node.js 20+ and Python 3.10+.
 
-### 1. Start the backend (Terminal 1)
+### 1. Create the Python environment
 
 From the repository root:
 
 ```powershell
 python -m venv .venv
+.\.venv\Scripts\python -m pip install --upgrade pip
+.\.venv\Scripts\python -m pip install --index-url https://download.pytorch.org/whl/cpu "torch>=2.10,<3.0"
 .\.venv\Scripts\python -m pip install -r .\backend\requirements.txt
+```
+
+### 2. Start the FastAPI backend
+
+```powershell
 .\.venv\Scripts\python -m uvicorn backend.app:app --reload --port 8000
 ```
 
-Open [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs) to inspect the API.
+Open [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs) to inspect the model, prediction, training, and annotation APIs.
 
-### 2. Start the frontend (Terminal 2)
+### 3. Start the React frontend
+
+In a second terminal:
 
 ```powershell
 cd frontend
@@ -68,7 +123,7 @@ npm install
 npm run dev
 ```
 
-Open [http://localhost:5173](http://localhost:5173). The header should show **SQLite connected**. If the backend is not running, the viewer still works and annotations are saved in that browser.
+Open [http://localhost:5173](http://localhost:5173). The header should show **SQLite connected**.
 
 ### Docker alternative
 
@@ -78,47 +133,69 @@ docker compose up --build
 
 Then open [http://localhost:5173](http://localhost:5173).
 
-## Rebuild the processed sample
+## Reproduce training
 
-Keep the raw dataset outside this repository, then run:
-
-```powershell
-python .\scripts\preprocess_hw1.py --raw-dir "..\DDO_dataset\01_rawdata"
-```
-
-The script processes the top-level JSON object one debate at a time, so it does not load the 1.23 GB file into memory. It rewrites the audit and the compact frontend data files. To run only the audit:
+The committed compact background cache and 51-debate test set are sufficient to reproduce the default model:
 
 ```powershell
-python .\scripts\audit_data.py --debates "..\DDO_dataset\01_rawdata\debates.json"
+.\.venv\Scripts\python -m training.train `
+  --epochs 150 `
+  --learning-rate 0.001 `
+  --hidden-units 64 `
+  --hidden-layers 1 `
+  --activation tanh `
+  --batch-size 128
 ```
 
-## Major technologies
+This rewrites `backend/model/transition_mlp.pt` (trained weights and preprocessing state) and `outputs/training_metrics.json` (curves, metrics, split sizes, baselines, and leakage controls).
 
-- React 19 and Vite
-- Custom accessible SVG network visualization
-- Python standard-library streaming preprocessing
-- FastAPI, Pydantic, and SQLite
-- Docker Compose
+To rebuild both the browser test set and the non-showcase training cache from the raw DDO files:
 
-## Repository layout
+```powershell
+.\.venv\Scripts\python .\scripts\preprocess_hw1.py --raw-dir "..\DDO_dataset\01_rawdata"
+.\.venv\Scripts\python .\scripts\preprocess_training_data.py --raw-dir "..\DDO_dataset\01_rawdata"
+```
+
+The raw 1.23 GB `debates.json` and 244 MB `users.json` files are not committed.
+
+## Test and validate
+
+```powershell
+.\.venv\Scripts\python -m unittest discover -s tests -v
+.\.venv\Scripts\python .\scripts\validate_outputs.py
+cd frontend
+npm run build
+```
+
+The tests cover stance parsing, streaming JSON, leakage-safe group splits, feature dimensions, model output shape, saved-model inference, processed-data consistency, and the trained model's improvement over the majority benchmark.
+
+## Project layout
 
 ```text
-backend/              FastAPI API and SQLite persistence
-docs/                 project narrative and three-minute demo plan
-frontend/             React/Vite application and compact sample data
-outputs/              complete raw-data audit summary
-scripts/              streaming audit and preprocessing code
-docker-compose.yml    optional full-stack local launch
+backend/                 FastAPI prediction, training, and annotation services
+  model/                 Saved PyTorch weights
+frontend/                React/Vite application and compact debate sample
+training/                Feature pipeline, MLP definition, training, metrics
+outputs/                 Data audit and training results
+scripts/                 Raw-data preprocessing and validation
+tests/                   Data and model pipeline tests
+docs/                    Demo script and screenshots
 ```
 
-## Known limitations
+## Data
+
+The project uses the DDO dataset collected from Debate.org by Esin Durmus and Claire Cardie. The supplied files contain debate metadata, argument rounds, audience votes, and user profiles. The data were downloaded from the Figshare record [Dataset for “Neural embedding of beliefs reveals the role of relative dissonance in human decision-making”](https://doi.org/10.6084/m9.figshare.28326899), which credits the original DDO dataset.
+
+The full preprocessing audit found 78,376 debates, 199,210 vote records, 66,297 strict before/after transitions, and 4,239 observed switchers. See [`outputs/audit_summary.json`](outputs/audit_summary.json).
+
+## Limitations
 
 - Debate.org users and voters are self-selected and are not representative of the public.
-- Before/after fields are self-reported and do not establish causal persuasion.
-- The app ships a selected sample for repository size and rendering clarity; preprocessing audits all raw debates.
-- Many vote records report a tie rather than a strict PRO/CON stance.
-- The later prediction problem is imbalanced (6.39% observed switching) and will require appropriate metrics and leakage-aware splits.
+- Before/after agreement is self-reported and does not establish causal persuasion.
+- The fixed browser test set intentionally emphasizes debates with useful transitions; its 12.4% switch rate is higher than the background corpus's 6.2% rate, so it is a demanding showcase test rather than a prevalence-representative random sample.
+- Switch is rare, so accuracy alone is misleading; class-sensitive metrics and the confusion matrix must be reported.
+- The model is a small HW2 demonstration, not a claim of deployable persuasion prediction.
 
-## Future deep-learning direction
+## AI-assisted development disclosure
 
-The next step is a transparent baseline using only information available before the outcome. Later, argument text can be encoded with a Transformer and combined with user-history representations. A graph model may eventually incorporate network context. Post-debate agreement and other outcome-revealing fields must never be used as predictive inputs.
+Codex was used to help design, implement, debug, test, and document the HW2 neural-network pipeline and web integration. The project owner is responsible for reviewing the code and being able to explain the model, forward pass, cross-entropy loss, backpropagation, optimizer updates, held-out-debate split, metrics, and leakage controls without AI assistance.

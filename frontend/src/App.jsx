@@ -4,6 +4,7 @@ import DebateList from './components/DebateList'
 import DetailPanel from './components/DetailPanel'
 import RoundViewer from './components/RoundViewer'
 import SummaryStrip from './components/SummaryStrip'
+import TrainingLab from './components/TrainingLab'
 
 const API = '/api'
 
@@ -31,6 +32,10 @@ export default function App() {
   const [backendOnline, setBackendOnline] = useState(false)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [prediction, setPrediction] = useState(null)
+  const [predictionLoading, setPredictionLoading] = useState(false)
+  const [predictionError, setPredictionError] = useState('')
+  const [modelVersion, setModelVersion] = useState(0)
 
   useEffect(() => {
     fetch('/data/debates_index.json')
@@ -79,6 +84,34 @@ export default function App() {
       .catch(() => setBackendOnline(false))
   }, [activeId])
 
+  useEffect(() => {
+    if (!selectedVoter || !activeId || !backendOnline) {
+      setPrediction(null)
+      setPredictionError('')
+      return undefined
+    }
+    const controller = new AbortController()
+    setPredictionLoading(true)
+    setPredictionError('')
+    fetch(`${API}/predict`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ debate_id: activeId, username: selectedVoter.username }),
+      signal: controller.signal,
+    })
+      .then(async (response) => {
+        const body = await response.json()
+        if (!response.ok) throw new Error(body.detail || 'Prediction unavailable.')
+        return body
+      })
+      .then(setPrediction)
+      .catch((reason) => {
+        if (reason.name !== 'AbortError') setPredictionError(reason.message)
+      })
+      .finally(() => setPredictionLoading(false))
+    return () => controller.abort()
+  }, [selectedVoter, activeId, backendOnline, modelVersion])
+
   const categories = useMemo(
     () => ['All categories', ...new Set(index.map((item) => item.category).sort())],
     [index],
@@ -123,12 +156,12 @@ export default function App() {
       <header className="topbar">
         <div className="brand-mark" aria-hidden="true">D</div>
         <div className="brand-copy">
-          <div className="eyebrow">DS 7400 · Homework 1</div>
+          <div className="eyebrow">DS 7400 · Homework 2</div>
           <h1>Debate Persuasion Explorer</h1>
         </div>
         <div className="research-question">
           <span>Research lens</span>
-          How do audience positions differ before and after a debate?
+          Can a small neural network predict whether a voter switches stance?
         </div>
         <div className={`status-pill ${backendOnline ? 'online' : ''}`} title="Annotations always save locally; start the backend for SQLite persistence.">
           <span className="status-dot" />
@@ -143,7 +176,7 @@ export default function App() {
               <span className="step-label">01</span>
               <h2>Choose a debate</h2>
             </div>
-            <span className="count-badge" title="Curated browser sample, not the full raw dataset">{filteredIndex.length} shown</span>
+            <span className="count-badge" title="All 51 browser debates form the fixed test set">{filteredIndex.length} shown</span>
           </div>
           <label className="field-label" htmlFor="debate-search">Search title or debater</label>
           <div className="search-wrap">
@@ -168,7 +201,7 @@ export default function App() {
             </label>
           </div>
           <p className="sample-note">
-            Curated browser sample · the full audit covers 78,376 debates.
+            Fixed test set · every debate shown here is excluded from training and validation.
           </p>
           <DebateList items={filteredIndex} activeId={activeId} onSelect={setActiveId} />
         </aside>
@@ -272,8 +305,13 @@ export default function App() {
                   annotation={selectedVoter ? annotations[selectedVoter.username] : null}
                   onSave={saveAnnotation}
                   backendOnline={backendOnline}
+                  prediction={prediction}
+                  predictionLoading={predictionLoading}
+                  predictionError={predictionError}
                 />
               </section>
+
+              <TrainingLab backendOnline={backendOnline} onModelUpdated={() => setModelVersion((value) => value + 1)} />
 
               <RoundViewer key={debate.id} rounds={debate.rounds} participants={debate.participants} />
             </>
@@ -283,7 +321,7 @@ export default function App() {
 
       <footer>
         <span>Access: Figshare record 28326899 · Original DDO: Durmus &amp; Cardie</span>
-        <span>66,297 valid before/after transitions audited from DDO</span>
+        <span>PyTorch MLP · 51-debate fixed test set · live training monitor</span>
       </footer>
     </div>
   )

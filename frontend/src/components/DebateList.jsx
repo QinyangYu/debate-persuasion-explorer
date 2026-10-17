@@ -4,7 +4,7 @@ export default function DebateList({ items, activeId, onSelect }) {
     <div className="debate-list">
       {items.map((item) => (
         <button key={item.id} className={`debate-row ${item.id === activeId ? 'active' : ''}`} onClick={() => onSelect(item.id)}>
-          <span className="debate-row-category">{item.category}</span>
+          <span className="debate-row-category">{item.category}<em>TEST</em></span>
           <strong>{item.title}</strong>
           <span className="debate-row-meta">
             <span>{item.valid_transitions} valid voters</span>

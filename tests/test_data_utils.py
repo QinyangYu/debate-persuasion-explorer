@@ -41,7 +41,9 @@ class DataUtilityTests(unittest.TestCase):
 
     def test_streaming_object_reader(self):
         payload = {"first": {"text": "small"}, "second": [1, 2, 3]}
-        with tempfile.TemporaryDirectory() as directory:
+        temp_root = Path(__file__).resolve().parents[1] / "tmp"
+        temp_root.mkdir(exist_ok=True)
+        with tempfile.TemporaryDirectory(dir=temp_root) as directory:
             path = Path(directory) / "sample.json"
             path.write_text(json.dumps(payload), encoding="utf-8")
             self.assertEqual(dict(iter_json_object(path, chunk_size=5)), payload)
