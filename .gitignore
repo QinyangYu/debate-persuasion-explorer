@@ -21,3 +21,10 @@ tmp/
 .DS_Store
 .vscode/
 .idea/
+
+# Office lock files
+~$*
+
+# Optional sentence-embedding outputs (regenerate with training/embeddings.py)
+training/data/background_embeddings.json.gz
+backend/model/test_embeddings.json

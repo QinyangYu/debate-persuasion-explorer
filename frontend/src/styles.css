@@ -251,7 +251,7 @@ select:focus, textarea:focus, .search-wrap:focus-within { border-color: var(--pr
 .dataset-split-banner span { padding-left: 18px; border-left: 1px solid #c7d9d4; }
 .dataset-split-banner span strong { color: var(--ink); font-size: 10px; }
 .dataset-split-banner .test-only { margin-left: auto; color: #7d6129; border-left-color: #dfc88e; }
-.training-layout { display: grid; grid-template-columns: 220px minmax(520px, 1fr) 210px; align-items: start; gap: 16px; }
+.training-layout { display: grid; grid-template-columns: 220px minmax(520px, 1fr) 210px; align-items: stretch; gap: 16px; }
 .training-layout h3 { margin: 0 0 11px; font: 700 12px 'Manrope'; }
 .hyperparameter-form { padding: 14px; border: 1px solid var(--line); border-radius: 6px; background: #f7f6f1; }
 .hyperparameter-form label { display: grid; grid-template-columns: 1fr 105px; align-items: center; gap: 8px; margin-bottom: 7px; }
@@ -260,7 +260,7 @@ select:focus, textarea:focus, .search-wrap:focus-within { border-color: var(--pr
 .hyperparameter-form button { width: 100%; min-height: 35px; margin-top: 6px; border: 0; border-radius: 5px; color: #fff; background: var(--ink); cursor: pointer; font-size: 9px; font-weight: 700; }
 .hyperparameter-form button:disabled { cursor: not-allowed; opacity: .48; }
 .hyperparameter-form > p { margin: 8px 0 0; color: #7a898f; font-size: 8px; line-height: 1.45; }
-.training-monitor { min-width: 0; padding: 14px; border: 1px solid var(--line); border-radius: 6px; }
+.training-monitor { display: flex; flex-direction: column; min-width: 0; padding: 14px; border: 1px solid var(--line); border-radius: 6px; }
 .monitor-status { display: flex; justify-content: space-between; align-items: center; color: var(--ink-soft); font-size: 9px; }
 .monitor-status > div { display: flex; align-items: center; gap: 6px; color: var(--ink); }
 .run-light { width: 7px; height: 7px; border-radius: 50%; background: #a6b0b2; }
@@ -269,17 +269,18 @@ select:focus, textarea:focus, .search-wrap:focus-within { border-color: var(--pr
 @keyframes pulse { 50% { opacity: .35; } }
 .progress-track { margin: 10px 0 6px; }
 .progress-track i { background: var(--pro); }
-.loss-chart-wrap { margin-top: 7px; }
+.loss-chart-wrap { display: flex; flex: 1; flex-direction: column; min-height: 250px; margin-top: 7px; }
+.loss-chart-area { position: relative; flex: 1; min-height: 220px; }
 .chart-legend { display: flex; justify-content: flex-end; gap: 14px; color: #64777f; font-size: 8px; }
 .chart-legend span::before { content: ''; display: inline-block; width: 13px; height: 2px; margin-right: 4px; vertical-align: middle; background: var(--pro); }
 .chart-legend .val-line::before { background: var(--con); }
-.loss-chart { width: 100%; height: 250px; }
+.loss-chart { position: absolute; inset: 0; width: 100%; height: 100%; }
 .loss-chart line { stroke: #cbd1cf; stroke-width: 1; }
 .loss-chart text { fill: #829097; font: 8px 'DM Sans'; }
 .loss-chart polyline { fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
 .loss-chart polyline.train { stroke: var(--pro); }
 .loss-chart polyline.validation { stroke: var(--con); }
-.chart-empty { height: 261px; display: grid; place-items: center; color: #829097; font-size: 10px; }
+.chart-empty { flex: 1; min-height: 261px; display: grid; place-items: center; color: #829097; font-size: 10px; }
 .training-error { margin: 6px 0 0; color: var(--con); font-size: 9px; }
 .promotion-message { margin: 7px 0 0; padding: 6px 8px; border-radius: 4px; font-size: 8.5px; line-height: 1.4; }
 .promotion-message.promoted { color: #176b55; background: #e8f4ee; }
@@ -290,6 +291,11 @@ select:focus, textarea:focus, .search-wrap:focus-within { border-color: var(--pr
 .metric-card span { color: var(--ink-soft); font-size: 8px; text-transform: uppercase; letter-spacing: .5px; }
 .metric-card strong { color: var(--ink); font: 800 15px 'Manrope'; }
 .metric-card small { grid-column: 1 / -1; color: #819097; font-size: 7.5px; }
+.metric-card.featured { padding: 10px 11px; border-color: var(--ink); background: var(--ink); }
+.metric-card.featured em { grid-column: 1 / -1; justify-self: start; padding: 2px 6px; border-radius: 3px; color: var(--ink); background: var(--gold); font: 800 7px 'Manrope'; font-style: normal; letter-spacing: .6px; text-transform: uppercase; }
+.metric-card.featured span { color: #c9d6db; }
+.metric-card.featured strong { color: #fff; font-size: 22px; }
+.metric-card.featured small { color: #aebfc6; line-height: 1.4; }
 .benchmark-result { margin: 3px 0 0; color: #5b7079; font-size: 8px; line-height: 1.4; }
 
 .round-viewer { padding: 18px; }

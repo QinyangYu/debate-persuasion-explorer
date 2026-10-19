@@ -37,11 +37,13 @@ class PredictionInput(BaseModel):
 
 class TrainingInput(BaseModel):
     learning_rate: float = Field(default=0.001, ge=0.00001, le=0.05)
-    epochs: int = Field(default=150, ge=5, le=200)
-    hidden_units: int = Field(default=64, ge=8, le=256)
+    epochs: int = Field(default=60, ge=5, le=200)
+    hidden_units: int = Field(default=128, ge=8, le=256)
     hidden_layers: int = Field(default=1, ge=1, le=4)
     activation: str = Field(default="tanh", pattern="^(relu|tanh|gelu)$")
     batch_size: int = Field(default=128, ge=16, le=256)
+    dropout: float = Field(default=0.3, ge=0.0, le=0.7)
+    weight_decay: float = Field(default=0.01, ge=0.0, le=0.1)
 
 
 def connect() -> sqlite3.Connection:
@@ -70,8 +72,11 @@ def initialize_database() -> None:
 
 app = FastAPI(
     title="Debate Persuasion Explorer API",
-    description="SQLite persistence for HW1 graph-node annotations.",
-    version="1.0.0",
+    description=(
+        "Backend for Debate Persuasion Explorer: PyTorch MLP Switch/Stay prediction, "
+        "interactive training with a live monitor, and SQLite storage for voter annotations."
+    ),
+    version="2.0.0",
 )
 app.add_middleware(
     CORSMiddleware,

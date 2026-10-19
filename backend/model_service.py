@@ -7,13 +7,19 @@ from typing import Any
 
 import torch
 
-from training.features import FeatureEncoder, build_inference_row
+from training.features import (
+    FeatureEncoder,
+    belief_summary,
+    build_inference_row,
+    load_test_embeddings,
+)
 from training.model import TransitionMLP
 
 
 PROJECT = Path(__file__).resolve().parents[1]
 DEFAULT_MODEL_PATH = PROJECT / "backend" / "model" / "transition_mlp.pt"
 DEBATE_DATA_DIR = PROJECT / "frontend" / "public" / "data" / "debates"
+TEST_EMBEDDINGS = PROJECT / "backend" / "model" / "test_embeddings.json"
 
 
 class ModelService:
@@ -25,6 +31,7 @@ class ModelService:
         self._classes: list[str] = []
         self._decision_threshold = 0.5
         self._metrics: dict[str, Any] = {}
+        self._embeddings: dict[str, dict[str, list[float]]] = {}
         self.reload()
 
     @property
@@ -48,6 +55,9 @@ class ModelService:
             self._classes = list(artifact["classes"])
             self._decision_threshold = float(artifact.get("decision_threshold", 0.5))
             self._metrics = artifact.get("metrics") or {}
+            self._embeddings = (
+                load_test_embeddings(TEST_EMBEDDINGS) if self._encoder.embedding_dimensions else {}
+            )
 
     def info(self) -> dict[str, Any]:
         with self._lock:
@@ -76,10 +86,12 @@ class ModelService:
             )
             if voter is None:
                 raise KeyError("Voter not found in the selected debate")
-            if voter.get("before") not in {"PRO", "CON"}:
-                raise ValueError("A strict before stance is required for prediction.")
+            if not voter.get("is_valid_transition"):
+                raise ValueError(
+                    "The model covers only voters with a PRO or CON stance both before and after the debate."
+                )
             profile = (debate.get("profiles") or {}).get(username) or {}
-            row = build_inference_row(debate, voter, profile)
+            row = build_inference_row(debate, voter, profile, self._embeddings.get(debate_id))
             features = torch.tensor([self._encoder.transform(row)], dtype=torch.float32)
             probabilities = torch.softmax(self._model(features), dim=1)[0].tolist()
             switch_probability = probabilities[1]
@@ -114,6 +126,34 @@ class ModelService:
                     "votes_cast": profile.get("number_of_voted_debates"),
                     "elo_ranking": profile.get("elo_ranking"),
                     "profile_available": bool(profile),
+                    "beliefs": self._belief_inputs(debate, voter, row),
+                    "text_embeddings": bool(row.get("pro_embedding")) and self._encoder.embedding_dimensions > 0,
                 },
             }
+
+    @staticmethod
+    def _belief_inputs(debate: dict[str, Any], voter: dict[str, Any], row: dict[str, Any]) -> dict[str, Any]:
+        """Human-readable view of the belief features for the voter-detail panel."""
+
+        coverage, same_agreement, same_overlap, other_agreement, other_overlap, dissonance = belief_summary(row)
+        names = {
+            str(participant.get("position") or "").upper()[:3]: participant.get("username")
+            for participant in debate.get("participants") or []
+        }
+        before = voter["before"]
+        opposite = "CON" if before == "PRO" else "PRO"
+        same_profile = row.get(f"{before.lower()}_debater_profile") or {}
+        other_profile = row.get(f"{opposite.lower()}_debater_profile") or {}
+        return {
+            "voter_issues_answered": round(coverage * 48),
+            "same_side_debater": names.get(before),
+            "same_side_debater_elo": same_profile.get("elo_ranking"),
+            "same_side_agreement": same_agreement if same_overlap else None,
+            "same_side_shared_issues": round(same_overlap * 48),
+            "other_side_debater": names.get(opposite),
+            "other_side_debater_elo": other_profile.get("elo_ranking"),
+            "other_side_agreement": other_agreement if other_overlap else None,
+            "other_side_shared_issues": round(other_overlap * 48),
+            "relative_dissonance": dissonance if same_overlap and other_overlap else None,
+        }
 

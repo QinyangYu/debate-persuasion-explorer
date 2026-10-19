@@ -17,6 +17,7 @@ from training.features import (
     TARGET_CLASSES,
     load_background_rows,
     load_rows,
+    load_test_embeddings,
     split_background_by_debate,
 )
 from training.model import TransitionMLP
@@ -28,18 +29,24 @@ DEFAULT_BACKGROUND_PROFILES = PROJECT / "training" / "data" / "background_profil
 DEFAULT_TEST_DATA = PROJECT / "frontend" / "public" / "data" / "debates"
 DEFAULT_MODEL = PROJECT / "backend" / "model" / "transition_mlp.pt"
 DEFAULT_METRICS = PROJECT / "outputs" / "training_metrics.json"
+DEFAULT_BACKGROUND_EMBEDDINGS = PROJECT / "training" / "data" / "background_embeddings.json.gz"
+DEFAULT_TEST_EMBEDDINGS = PROJECT / "backend" / "model" / "test_embeddings.json"
 
 
 @dataclass
 class TrainConfig:
     learning_rate: float = 0.001
-    epochs: int = 150
-    hidden_units: int = 64
+    epochs: int = 60
+    hidden_units: int = 128
     hidden_layers: int = 1
     activation: str = "tanh"
     batch_size: int = 128
     seed: int = 7400
-    dropout: float = 0.10
+    dropout: float = 0.30
+    weight_decay: float = 0.01
+    # Optional MiniLM text features (training/embeddings.py); off by default because
+    # they lowered validation PR-AUC in our comparison.
+    text_embeddings: bool = False
 
 
 def _tensorize(rows: list[dict[str, Any]], encoder: FeatureEncoder) -> TensorDataset:
@@ -141,9 +148,30 @@ def choose_threshold(model: nn.Module, dataset: TensorDataset, loss_fn: nn.Modul
     return max(scored)[-1]
 
 
+def showcase_like_indices(rows: list[dict[str, Any]]) -> list[int]:
+    """Rows from debates that pass the showcase selection rule.
+
+    The 51 showcase debates were chosen among debates with at least five strict
+    voters and at least one switcher, which doubles their switch rate.  Tuning
+    the decision threshold on validation debates chosen by the same rule lets
+    the threshold transfer to that test set without touching test labels.
+    """
+
+    voters = Counter(row["debate_id"] for row in rows)
+    switchers = Counter(row["debate_id"] for row in rows if row["label"] == 1)
+    keep = {debate for debate, count in voters.items() if count >= 5 and switchers[debate] > 0}
+    return [index for index, row in enumerate(rows) if row["debate_id"] in keep]
+
+
+def _subset(dataset: TensorDataset, indices: list[int]) -> TensorDataset:
+    selected = torch.tensor(indices, dtype=torch.long)
+    return TensorDataset(*(tensor[selected] for tensor in dataset.tensors))
+
+
 def _train_linear_baseline(
     train_data: TensorDataset,
     validation_data: TensorDataset,
+    calibration_data: TensorDataset,
     test_data: TensorDataset,
     class_weights: torch.Tensor,
     seed: int,
@@ -170,7 +198,7 @@ def _train_linear_baseline(
             best_state = {name: tensor.detach().clone() for name, tensor in model.state_dict().items()}
     if best_state is not None:
         model.load_state_dict(best_state)
-    threshold = choose_threshold(model, validation_data, loss_fn)
+    threshold = choose_threshold(model, calibration_data, loss_fn)
     return {
         "description": "Linear softmax/logistic regression on structured baseline inputs",
         "decision_threshold": threshold,
@@ -192,9 +220,15 @@ def train_model(
     torch.manual_seed(config.seed)
     torch.set_num_threads(max(1, min(torch.get_num_threads(), 4)))
 
-    background_rows = load_background_rows(background_data, background_profiles)
+    use_embeddings = config.text_embeddings and DEFAULT_BACKGROUND_EMBEDDINGS.exists()
+    background_rows = load_background_rows(
+        background_data,
+        background_profiles,
+        DEFAULT_BACKGROUND_EMBEDDINGS if use_embeddings else None,
+    )
     train_rows, validation_rows = split_background_by_debate(background_rows, config.seed)
-    test_rows = load_rows(test_data_dir)
+    test_embeddings = load_test_embeddings(DEFAULT_TEST_EMBEDDINGS if use_embeddings else None)
+    test_rows = load_rows(test_data_dir, test_embeddings)
     train_ids = {row["debate_id"] for row in train_rows}
     validation_ids = {row["debate_id"] for row in validation_rows}
     test_ids = {row["debate_id"] for row in test_rows}
@@ -202,11 +236,15 @@ def train_model(
         raise ValueError("A debate crossed the train/validation/test boundary.")
     if len(test_ids) != 51:
         raise ValueError(f"Expected all 51 showcased debates in test, found {len(test_ids)}")
-    encoder = FeatureEncoder.fit(train_rows)
+    embedding_dimensions = next(
+        (len(row["pro_embedding"]) for row in train_rows if use_embeddings and row.get("pro_embedding")),
+        0,
+    )
+    encoder = FeatureEncoder.fit(train_rows, embedding_dimensions=embedding_dimensions)
     train_data = _tensorize(train_rows, encoder)
     validation_data = _tensorize(validation_rows, encoder)
     test_data = _tensorize(test_rows, encoder)
-    structured_dimension = encoder.dimension - (encoder.text_dimensions * 2)
+    structured_dimension = encoder.dimension - encoder.text_block_dimensions
     structured_train_data = TensorDataset(
         train_data.tensors[0][:, :structured_dimension], train_data.tensors[1]
     )
@@ -216,6 +254,9 @@ def train_model(
     structured_test_data = TensorDataset(
         test_data.tensors[0][:, :structured_dimension], test_data.tensors[1]
     )
+    calibration_indices = showcase_like_indices(validation_rows)
+    calibration_data = _subset(validation_data, calibration_indices)
+    structured_calibration_data = _subset(structured_validation_data, calibration_indices)
 
     model = TransitionMLP(
         encoder.dimension,
@@ -224,7 +265,9 @@ def train_model(
         config.activation,  # type: ignore[arg-type]
         config.dropout,
     )
-    optimizer = torch.optim.Adam(model.parameters(), lr=config.learning_rate)
+    optimizer = torch.optim.AdamW(
+        model.parameters(), lr=config.learning_rate, weight_decay=config.weight_decay
+    )
     train_counts = Counter(row["label"] for row in train_rows)
     class_weights = torch.tensor(
         [len(train_rows) / (2 * max(train_counts[index], 1)) for index in range(2)],
@@ -278,9 +321,10 @@ def train_model(
     if best_state is not None:
         model.load_state_dict(best_state)
 
-    decision_threshold = choose_threshold(model, validation_data, loss_fn)
+    decision_threshold = choose_threshold(model, calibration_data, loss_fn)
     train_metrics = evaluate(model, train_data, loss_fn, decision_threshold)
     validation_metrics = evaluate(model, validation_data, loss_fn, decision_threshold)
+    calibration_metrics = evaluate(model, calibration_data, loss_fn, decision_threshold)
     test_metrics = evaluate(model, test_data, loss_fn, decision_threshold)
     test_labels = [row["label"] for row in test_rows]
     majority_class, majority_count = Counter(row["label"] for row in train_rows).most_common(1)[0]
@@ -288,6 +332,7 @@ def train_model(
     linear_baseline = _train_linear_baseline(
         structured_train_data,
         structured_validation_data,
+        structured_calibration_data,
         structured_test_data,
         class_weights,
         config.seed + 1,
@@ -319,6 +364,10 @@ def train_model(
             "train_debates": len({row["debate_id"] for row in train_rows}),
             "validation_debates": len({row["debate_id"] for row in validation_rows}),
             "test_debates": len({row["debate_id"] for row in test_rows}),
+            "threshold_calibration_examples": len(calibration_indices),
+            "threshold_calibration_debates": len(
+                {validation_rows[index]["debate_id"] for index in calibration_indices}
+            ),
         },
         "baselines": {
             "majority_class": {
@@ -331,6 +380,7 @@ def train_model(
         },
         "train": train_metrics,
         "validation": validation_metrics,
+        "threshold_calibration": calibration_metrics,
         "test": test_metrics,
         "history": history,
         "feature_names": encoder.feature_names,
@@ -343,7 +393,8 @@ def train_model(
             "Post-debate judging fields are excluded.",
             "All voters from a debate stay in one split.",
             "Every debate shown in the browser is excluded from training and validation.",
-            "The decision threshold is selected on validation data only.",
+            "The decision threshold is selected on validation data only, using validation debates "
+            "that pass the same selection rule as the showcase test set.",
         ],
     }
 
@@ -383,11 +434,14 @@ def main() -> None:
     parser.add_argument("--model-path", type=Path, default=DEFAULT_MODEL)
     parser.add_argument("--metrics-path", type=Path, default=DEFAULT_METRICS)
     parser.add_argument("--learning-rate", type=float, default=0.001)
-    parser.add_argument("--epochs", type=int, default=150)
-    parser.add_argument("--hidden-units", type=int, default=64)
+    parser.add_argument("--epochs", type=int, default=60)
+    parser.add_argument("--hidden-units", type=int, default=128)
     parser.add_argument("--hidden-layers", type=int, default=1)
     parser.add_argument("--activation", choices=("relu", "tanh", "gelu"), default="tanh")
     parser.add_argument("--batch-size", type=int, default=128)
+    parser.add_argument("--dropout", type=float, default=0.30)
+    parser.add_argument("--weight-decay", type=float, default=0.01)
+    parser.add_argument("--text-embeddings", action="store_true")
     parser.add_argument("--seed", type=int, default=7400)
     args = parser.parse_args()
     config = TrainConfig(
@@ -398,6 +452,9 @@ def main() -> None:
         activation=args.activation,
         batch_size=args.batch_size,
         seed=args.seed,
+        dropout=args.dropout,
+        weight_decay=args.weight_decay,
+        text_embeddings=args.text_embeddings,
     )
     metrics = train_model(
         config,

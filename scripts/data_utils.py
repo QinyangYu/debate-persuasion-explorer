@@ -160,6 +160,33 @@ def classify_stance(
     return selected[0]
 
 
+def _safe_int(value: Any) -> int:
+    digits = "".join(character for character in str(value or "0").replace(",", "") if character.isdigit())
+    return int(digits or 0)
+
+
+def profile_record(profile: dict[str, Any]) -> dict[str, Any]:
+    """Keep the profile fields used by the app and model.
+
+    `big_issues` keeps only answered stances (Pro, Con, Und) on Debate.org's
+    48 "big issues"; "N/S" (not saying) and "N/O" (no opinion) are dropped.
+    """
+
+    issues = profile.get("big_issues_dict") or {}
+    return {
+        "political_ideology": profile.get("political_ideology"),
+        "religious_ideology": profile.get("religious_ideology"),
+        "elo_ranking": profile.get("elo_ranking"),
+        "number_of_all_debates": _safe_int(profile.get("number_of_all_debates")),
+        "number_of_voted_debates": _safe_int(profile.get("number_of_voted_debates")),
+        "big_issues": {
+            issue: stance
+            for issue, stance in issues.items()
+            if stance in {"Pro", "Con", "Und"}
+        },
+    }
+
+
 def parse_vote(vote: dict[str, Any], sides: dict[str, str] | None) -> dict[str, Any]:
     before = classify_stance(vote.get("votes_map"), sides, STANCE_FIELDS["before"])
     after = classify_stance(vote.get("votes_map"), sides, STANCE_FIELDS["after"])

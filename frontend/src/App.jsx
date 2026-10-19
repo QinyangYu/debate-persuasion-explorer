@@ -85,9 +85,11 @@ export default function App() {
   }, [activeId])
 
   useEffect(() => {
-    if (!selectedVoter || !activeId || !backendOnline) {
-      setPrediction(null)
-      setPredictionError('')
+    setPrediction(null)
+    setPredictionError('')
+    // The model only covers strict PRO/CON -> PRO/CON transitions; ties and unknowns are out of scope.
+    if (!selectedVoter?.is_valid_transition || !activeId || !backendOnline) {
+      setPredictionLoading(false)
       return undefined
     }
     const controller = new AbortController()

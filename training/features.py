@@ -24,6 +24,31 @@ NUMERIC_NAMES = (
     "log_user_votes",
     "log_user_elo",
     "has_profile",
+    "log_same_side_debater_elo",
+    "log_other_side_debater_elo",
+    "log_same_side_debater_debates",
+    "log_other_side_debater_debates",
+)
+# Debate.org profiles ask every user for a stance on these 48 "big issues".
+BIG_ISSUES = (
+    "Abortion", "Affirmative Action", "Animal Rights", "Barack Obama", "Border Fence",
+    "Capitalism", "Civil Unions", "Death Penalty", "Drug Legalization", "Electoral College",
+    "Environmental Protection", "Estate Tax", "European Union", "Euthanasia", "Federal Reserve",
+    "Flat Tax", "Free Trade", "Gay Marriage", "Global Warming Exists", "Globalization",
+    "Gold Standard", "Gun Rights", "Homeschooling", "Internet Censorship", "Iran-Iraq War",
+    "Labor Union", "Legalized Prostitution", "Medicaid & Medicare", "Medical Marijuana",
+    "Military Intervention", "Minimum Wage", "National Health Care", "National Retail Sales Tax",
+    "Occupy Movement", "Progressive Tax", "Racial Profiling", "Redistribution", "Smoking Ban",
+    "Social Programs", "Social Security", "Socialism", "Stimulus Spending", "Term Limits",
+    "Torture", "United Nations", "War in Afghanistan", "War on Terror", "Welfare",
+)
+BELIEF_SUMMARY_NAMES = (
+    "voter_issue_coverage",
+    "same_side_belief_agreement",
+    "same_side_belief_overlap",
+    "other_side_belief_agreement",
+    "other_side_belief_overlap",
+    "relative_dissonance",
 )
 
 
@@ -87,13 +112,24 @@ def _hashed_text(tokens: Iterable[str], dimensions: int) -> list[float]:
     return [value / scale for value in values]
 
 
-def load_rows(data_dir: Path) -> list[dict[str, Any]]:
+def load_test_embeddings(path: Path | None) -> dict[str, dict[str, list[float]]]:
+    """Reduced PRO/CON sentence embeddings for the showcase debates, keyed by debate ID."""
+
+    if path is None or not path.exists():
+        return {}
+    return json.loads(path.read_text(encoding="utf-8"))["vectors"]
+
+
+def load_rows(
+    data_dir: Path, embeddings: dict[str, dict[str, list[float]]] | None = None
+) -> list[dict[str, Any]]:
     """Build one leakage-safe learning row for every strict voter transition."""
 
     rows: list[dict[str, Any]] = []
     for path in sorted(data_dir.glob("*.json")):
         debate = json.loads(path.read_text(encoding="utf-8"))
         pro_tokens, con_tokens = _argument_tokens(debate)
+        vectors = (embeddings or {}).get(debate["id"]) or {}
         shared = {
             "debate_id": debate["id"],
             "category": str(debate.get("category") or "Unknown"),
@@ -104,6 +140,8 @@ def load_rows(data_dir: Path) -> list[dict[str, Any]]:
             "con_word_count": len(con_tokens),
         }
         profiles = debate.get("profiles") or {}
+        shared.update(debater_profiles(debate))
+        shared.update(pro_embedding=vectors.get("pro"), con_embedding=vectors.get("con"))
         for voter in debate.get("voters") or []:
             transition = str(voter.get("transition") or "")
             if not voter.get("is_valid_transition") or transition not in TRANSITIONS:
@@ -114,7 +152,22 @@ def load_rows(data_dir: Path) -> list[dict[str, Any]]:
     return rows
 
 
-def load_background_rows(data_path: Path, profiles_path: Path) -> list[dict[str, Any]]:
+def debater_profiles(debate: dict[str, Any]) -> dict[str, dict[str, Any]]:
+    """Return the PRO and CON debaters' profiles from an app-format debate."""
+
+    profiles = debate.get("profiles") or {}
+    output = {"pro_debater_profile": {}, "con_debater_profile": {}}
+    for participant in debate.get("participants") or []:
+        position = str(participant.get("position") or "").upper()
+        side = "pro" if position.startswith("PRO") else "con" if position.startswith("CON") else None
+        if side:
+            output[f"{side}_debater_profile"] = profiles.get(str(participant.get("username"))) or {}
+    return output
+
+
+def load_background_rows(
+    data_path: Path, profiles_path: Path, embeddings_path: Path | None = None
+) -> list[dict[str, Any]]:
     """Load the compact non-showcase corpus produced by preprocess_training_data.py."""
 
     if not data_path.exists():
@@ -126,6 +179,10 @@ def load_background_rows(data_path: Path, profiles_path: Path) -> list[dict[str,
     if profiles_path.exists():
         with gzip.open(profiles_path, "rt", encoding="utf-8") as handle:
             profiles = json.load(handle)
+    embeddings: dict[str, list[float]] = {}
+    if embeddings_path is not None and embeddings_path.exists():
+        with gzip.open(embeddings_path, "rt", encoding="utf-8") as handle:
+            embeddings = json.load(handle)["vectors"]
 
     rows: list[dict[str, Any]] = []
     with gzip.open(data_path, "rt", encoding="utf-8") as handle:
@@ -141,7 +198,13 @@ def load_background_rows(data_path: Path, profiles_path: Path) -> list[dict[str,
                 "con_word_count": int(debate.get("con_word_count") or 0),
                 "pro_text_features": debate.get("pro_text_features") or [],
                 "con_text_features": debate.get("con_text_features") or [],
+                "pro_debater_profile": profiles.get(str(debate.get("pro_debater") or "").casefold()) or {},
+                "con_debater_profile": profiles.get(str(debate.get("con_debater") or "").casefold()) or {},
             }
+            vector = embeddings.get(debate["id"])
+            if vector:
+                half = len(vector) // 2
+                shared.update(pro_embedding=vector[:half], con_embedding=vector[half:])
             for voter in debate.get("voters") or []:
                 before = str(voter.get("before") or "")
                 label = int(voter.get("label") or 0)
@@ -161,11 +224,15 @@ def load_background_rows(data_path: Path, profiles_path: Path) -> list[dict[str,
 
 
 def build_inference_row(
-    debate: dict[str, Any], voter: dict[str, Any], profile: dict[str, Any] | None = None
+    debate: dict[str, Any],
+    voter: dict[str, Any],
+    profile: dict[str, Any] | None = None,
+    embeddings: dict[str, list[float]] | None = None,
 ) -> dict[str, Any]:
     """Create the exact feature row used for a live app prediction."""
 
     pro_tokens, con_tokens = _argument_tokens(debate)
+    vectors = embeddings or {}
     shared = {
         "debate_id": debate["id"],
         "category": str(debate.get("category") or "Unknown"),
@@ -174,6 +241,9 @@ def build_inference_row(
         "con_tokens": con_tokens,
         "pro_word_count": len(pro_tokens),
         "con_word_count": len(con_tokens),
+        "pro_embedding": vectors.get("pro"),
+        "con_embedding": vectors.get("con"),
+        **debater_profiles(debate),
     }
     return build_row(shared, voter, profile or {})
 
@@ -200,9 +270,12 @@ class FeatureEncoder:
     numeric_means: list[float]
     numeric_stds: list[float]
     text_dimensions: int = 32
+    embedding_dimensions: int = 0
 
     @classmethod
-    def fit(cls, rows: list[dict[str, Any]], text_dimensions: int = 32) -> "FeatureEncoder":
+    def fit(
+        cls, rows: list[dict[str, Any]], text_dimensions: int = 32, embedding_dimensions: int = 0
+    ) -> "FeatureEncoder":
         categories = _vocabulary(rows, lambda row: row["category"], minimum=1, limit=24)
         political = _vocabulary(
             rows,
@@ -222,20 +295,19 @@ class FeatureEncoder:
         for index, mean in enumerate(means):
             variance = sum((values[index] - mean) ** 2 for values in raw) / max(len(raw) - 1, 1)
             stds.append(max(math.sqrt(variance), 1e-6))
-        return cls(categories, political, religious, means, stds, text_dimensions)
+        return cls(
+            categories, political, religious, means, stds, text_dimensions, embedding_dimensions
+        )
+
+    @property
+    def text_block_dimensions(self) -> int:
+        """Argument-text features, placed last; the logistic baseline omits them."""
+
+        return (self.text_dimensions + self.embedding_dimensions) * 2
 
     @property
     def dimension(self) -> int:
-        return (
-            len(NUMERIC_NAMES)
-            + len(self.categories)
-            + 1
-            + len(self.political_values)
-            + 1
-            + len(self.religious_values)
-            + 1
-            + self.text_dimensions * 2
-        )
+        return len(self.feature_names)
 
     @property
     def feature_names(self) -> list[str]:
@@ -247,8 +319,12 @@ class FeatureEncoder:
             "politics=Other",
             *[f"religion={value}" for value in self.religious_values],
             "religion=Other",
+            *[f"voter_issue={issue}" for issue in BIG_ISSUES],
+            *BELIEF_SUMMARY_NAMES,
             *[f"pro_text_hash_{index}" for index in range(self.text_dimensions)],
             *[f"con_text_hash_{index}" for index in range(self.text_dimensions)],
+            *[f"pro_text_embedding_{index}" for index in range(self.embedding_dimensions)],
+            *[f"con_text_embedding_{index}" for index in range(self.embedding_dimensions)],
         ]
 
     def transform(self, row: dict[str, Any]) -> list[float]:
@@ -264,8 +340,12 @@ class FeatureEncoder:
             *_one_hot(str(row.get("category") or "Unknown"), self.categories),
             *_one_hot(str(profile.get("political_ideology") or "Unknown"), self.political_values),
             *_one_hot(str(profile.get("religious_ideology") or "Unknown"), self.religious_values),
+            *issue_vector(profile),
+            *belief_summary(row),
             *_text_features(row, "pro", self.text_dimensions),
             *_text_features(row, "con", self.text_dimensions),
+            *_embedding_features(row, "pro", self.embedding_dimensions),
+            *_embedding_features(row, "con", self.embedding_dimensions),
         ]
 
     def to_dict(self) -> dict[str, Any]:
@@ -276,6 +356,7 @@ class FeatureEncoder:
             "numeric_means": self.numeric_means,
             "numeric_stds": self.numeric_stds,
             "text_dimensions": self.text_dimensions,
+            "embedding_dimensions": self.embedding_dimensions,
         }
 
     @classmethod
@@ -297,8 +378,54 @@ def _one_hot(value: str, vocabulary: list[str]) -> list[float]:
     return output
 
 
+def issue_vector(profile: dict[str, Any]) -> list[float]:
+    """+1 for Pro, -1 for Con, 0 for undecided or unanswered on each big issue."""
+
+    issues = profile.get("big_issues") or {}
+    return [{"Pro": 1.0, "Con": -1.0}.get(issues.get(issue), 0.0) for issue in BIG_ISSUES]
+
+
+def _belief_agreement(first: list[float], second: list[float]) -> tuple[float, float]:
+    """Mean agreement (-1..1) and overlap fraction over issues both users answered."""
+
+    shared = [a * b for a, b in zip(first, second, strict=True) if a and b]
+    if not shared:
+        return 0.0, 0.0
+    return sum(shared) / len(shared), len(shared) / len(BIG_ISSUES)
+
+
+def side_debater_profiles(row: dict[str, Any]) -> tuple[dict[str, Any], dict[str, Any]]:
+    """Profiles of the debater the voter initially agreed with, then the opponent."""
+
+    pro = row.get("pro_debater_profile") or {}
+    con = row.get("con_debater_profile") or {}
+    return (pro, con) if row.get("before") == "PRO" else (con, pro)
+
+
+def belief_summary(row: dict[str, Any]) -> list[float]:
+    """Belief similarity between the voter and each debater.
+
+    Relative dissonance is agreement with the opposing debater minus agreement
+    with the debater the voter sided with before the debate.
+    """
+
+    voter = issue_vector(row.get("profile") or {})
+    same, other = side_debater_profiles(row)
+    same_agreement, same_overlap = _belief_agreement(voter, issue_vector(same))
+    other_agreement, other_overlap = _belief_agreement(voter, issue_vector(other))
+    return [
+        sum(1 for value in voter if value) / len(BIG_ISSUES),
+        same_agreement,
+        same_overlap,
+        other_agreement,
+        other_overlap,
+        other_agreement - same_agreement,
+    ]
+
+
 def _numeric_values(row: dict[str, Any]) -> list[float]:
     profile = row.get("profile") or {}
+    same, other = side_debater_profiles(row)
     pro_count = int(row.get("pro_word_count", len(row.get("pro_tokens") or [])))
     con_count = int(row.get("con_word_count", len(row.get("con_tokens") or [])))
     total_words = max(pro_count + con_count, 1)
@@ -312,6 +439,10 @@ def _numeric_values(row: dict[str, Any]) -> list[float]:
         math.log1p(max(_safe_float(profile.get("number_of_voted_debates")), 0.0)),
         math.log1p(max(_safe_float(profile.get("elo_ranking")), 0.0)),
         1.0 if profile else 0.0,
+        math.log1p(max(_safe_float(same.get("elo_ranking")), 0.0)),
+        math.log1p(max(_safe_float(other.get("elo_ranking")), 0.0)),
+        math.log1p(max(_safe_float(same.get("number_of_all_debates")), 0.0)),
+        math.log1p(max(_safe_float(other.get("number_of_all_debates")), 0.0)),
     ]
 
 
@@ -320,6 +451,15 @@ def _text_features(row: dict[str, Any], side: str, dimensions: int) -> list[floa
     if isinstance(cached, list) and len(cached) == dimensions:
         return [float(value) for value in cached]
     return _hashed_text(row.get(f"{side}_tokens") or [], dimensions)
+
+
+def _embedding_features(row: dict[str, Any], side: str, dimensions: int) -> list[float]:
+    if not dimensions:
+        return []
+    cached = row.get(f"{side}_embedding")
+    if isinstance(cached, list) and len(cached) == dimensions:
+        return [float(value) for value in cached]
+    return [0.0] * dimensions
 
 
 def split_by_debate(

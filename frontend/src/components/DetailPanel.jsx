@@ -2,6 +2,16 @@ import { useEffect, useState } from 'react'
 
 const labels = ['Needs review', 'Notable switch', 'Stable stance', 'Exclude later']
 
+function signed(value) {
+  return `${value >= 0 ? '+' : ''}${value.toFixed(2)}`
+}
+
+function debaterLine(name, elo, agreement, sharedIssues) {
+  const who = `${name || 'unknown'} (Elo ${elo || 'unavailable'})`
+  if (agreement == null) return `${who}; no shared big issues`
+  return `${who}; belief agreement ${signed(agreement)} over ${sharedIssues} shared issues`
+}
+
 export default function DetailPanel({ voter, profile, annotation, onSave, backendOnline, prediction, predictionLoading, predictionError }) {
   const [label, setLabel] = useState('Needs review')
   const [note, setNote] = useState('')
@@ -22,6 +32,8 @@ export default function DetailPanel({ voter, profile, annotation, onSave, backen
       </aside>
     )
   }
+
+  const beliefs = prediction?.input_summary?.beliefs
 
   async function submit(event) {
     event.preventDefault()
@@ -57,6 +69,11 @@ export default function DetailPanel({ voter, profile, annotation, onSave, backen
       )}
       <section className="prediction-card">
         <div className="prediction-title"><h3>MLP prediction</h3></div>
+        {!voter.is_valid_transition && (
+          <p className="prediction-state">
+            Not predicted. The model covers only voters whose recorded stance is PRO or CON both before and after the debate. This record is {voter.before} → {voter.after}, so there is no Stay/Switch outcome to predict or check.
+          </p>
+        )}
         {predictionLoading && <p className="prediction-state">Running inference…</p>}
         {predictionError && <p className="prediction-state error">{predictionError}</p>}
         {prediction && !predictionLoading && (
@@ -78,15 +95,23 @@ export default function DetailPanel({ voter, profile, annotation, onSave, backen
               <ul>
                 <li><b>Initial stance:</b> {prediction.before}</li>
                 <li><b>Debate:</b> {prediction.input_summary.category}; {prediction.input_summary.rounds} rounds</li>
-                <li><b>Arguments:</b> {prediction.input_summary.pro_argument_words} PRO words and {prediction.input_summary.con_argument_words} CON words, plus separate hashed text vectors</li>
+                <li><b>Arguments:</b> {prediction.input_summary.pro_argument_words} PRO words and {prediction.input_summary.con_argument_words} CON words, plus separate hashed text vectors{prediction.input_summary.text_embeddings ? ' and MiniLM sentence-embedding vectors' : ''}</li>
                 <li><b>User profile:</b> politics {prediction.input_summary.political_ideology || 'unavailable'}; religion {prediction.input_summary.religious_ideology || 'unavailable'}; Elo {prediction.input_summary.elo_ranking || 'unavailable'}</li>
                 <li><b>User activity:</b> {prediction.input_summary.debates_as_participant ?? 'unavailable'} debates; {prediction.input_summary.votes_cast ?? 'unavailable'} votes</li>
+                {beliefs && (
+                  <>
+                    <li><b>Big-issue beliefs:</b> stances on {beliefs.voter_issues_answered} of 48 Debate.org big issues</li>
+                    <li><b>Initially backed debater:</b> {debaterLine(beliefs.same_side_debater, beliefs.same_side_debater_elo, beliefs.same_side_agreement, beliefs.same_side_shared_issues)}</li>
+                    <li><b>Opposing debater:</b> {debaterLine(beliefs.other_side_debater, beliefs.other_side_debater_elo, beliefs.other_side_agreement, beliefs.other_side_shared_issues)}</li>
+                    <li title="Agreement with the opposing debater minus agreement with the initially backed debater. Positive values mean the voter's beliefs sit closer to the other side."><b>Relative dissonance:</b> {beliefs.relative_dissonance == null ? 'unavailable (needs shared issues with both debaters)' : signed(beliefs.relative_dissonance)}</li>
+                  </>
+                )}
               </ul>
               <small>The recorded after stance and post-debate judging fields are excluded.</small>
             </details>
           </>
         )}
-        {!prediction && !predictionLoading && !predictionError && <p className="prediction-state">Start the backend and train the model to enable inference.</p>}
+        {voter.is_valid_transition && !prediction && !predictionLoading && !predictionError && <p className="prediction-state">Start the backend and train the model to enable inference.</p>}
       </section>
       <form className="annotation-form" onSubmit={submit}>
         <div className="annotation-title">

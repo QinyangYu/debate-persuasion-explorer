@@ -17,16 +17,22 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
-from data_utils import iter_json_object, parse_vote, participant_sides
+from data_utils import iter_json_object, parse_vote, participant_sides, profile_record
 
 
 PROJECT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT))
 
 
-def safe_int(value: Any) -> int:
-    digits = "".join(character for character in str(value or "0").replace(",", "") if character.isdigit())
-    return int(digits or 0)
+def side_text(debate: dict[str, Any], side: str, limit: int) -> str:
+    """Concatenate one side's arguments, truncated for the sentence encoder."""
+
+    parts = []
+    for round_record in debate.get("rounds") or []:
+        for argument in round_record if isinstance(round_record, list) else []:
+            if isinstance(argument, dict) and str(argument.get("side") or "").upper().startswith(side):
+                parts.append(" ".join(str(argument.get("text") or "").split()))
+    return " ".join(parts)[:limit]
 
 
 def showcase_keys(test_data_dir: Path) -> set[str]:
@@ -46,6 +52,7 @@ def build_cache(
     users_path: Path,
     test_data_dir: Path,
     output_dir: Path,
+    text_output: Path | None = None,
 ) -> dict[str, Any]:
     from training.features import argument_feature_record
 
@@ -60,6 +67,7 @@ def build_cache(
     wanted_users: set[str] = set()
     seen_showcase: set[str] = set()
 
+    text_handle = gzip.open(text_output, "wt", encoding="utf-8") if text_output else None
     with gzip.open(debates_output, "wt", encoding="utf-8", compresslevel=6) as output:
         for serial, (key, debate) in enumerate(iter_json_object(debates_path), start=1):
             if key in excluded_keys:
@@ -84,14 +92,25 @@ def build_cache(
                 continue
 
             features = argument_feature_record(debate)
+            debaters = {side: name for name, side in (sides or {}).items()}
+            wanted_users.update(name.casefold() for name in debaters.values())
             record = {
                 "id": f"background:{serial}",
                 "category": debate.get("category") or "Uncategorized",
                 "round_count": len(debate.get("rounds") or []),
+                "pro_debater": debaters.get("PRO"),
+                "con_debater": debaters.get("CON"),
                 **features,
                 "voters": voters,
             }
             output.write(json.dumps(record, ensure_ascii=False, separators=(",", ":")) + "\n")
+            if text_handle:
+                text_record = {
+                    "id": record["id"],
+                    "pro_text": side_text(debate, "PRO", 4000),
+                    "con_text": side_text(debate, "CON", 4000),
+                }
+                text_handle.write(json.dumps(text_record, ensure_ascii=False) + "\n")
             counts["debates"] += 1
             if serial % 5000 == 0:
                 print(
@@ -100,6 +119,8 @@ def build_cache(
                     flush=True,
                 )
 
+    if text_handle:
+        text_handle.close()
     if seen_showcase != excluded_keys:
         missing = sorted(excluded_keys - seen_showcase)
         raise ValueError(f"The raw corpus did not contain {len(missing)} showcase debates")
@@ -110,13 +131,7 @@ def build_cache(
             normalized = username.casefold()
             if normalized not in wanted_users:
                 continue
-            profiles[normalized] = {
-                "political_ideology": profile.get("political_ideology"),
-                "religious_ideology": profile.get("religious_ideology"),
-                "elo_ranking": profile.get("elo_ranking"),
-                "number_of_all_debates": safe_int(profile.get("number_of_all_debates")),
-                "number_of_voted_debates": safe_int(profile.get("number_of_voted_debates")),
-            }
+            profiles[normalized] = profile_record(profile)
     with gzip.open(profiles_output, "wt", encoding="utf-8", compresslevel=6) as output:
         json.dump(profiles, output, ensure_ascii=False, separators=(",", ":"))
 
@@ -147,12 +162,19 @@ def main() -> None:
         default=PROJECT / "frontend" / "public" / "data" / "debates",
     )
     parser.add_argument("--output-dir", type=Path, default=PROJECT / "training" / "data")
+    parser.add_argument(
+        "--text-output",
+        type=Path,
+        default=None,
+        help="Optional gzip JSONL of truncated argument text for sentence embeddings",
+    )
     args = parser.parse_args()
     build_cache(
         args.raw_dir / "debates.json",
         args.raw_dir / "users.json",
         args.test_data_dir,
         args.output_dir,
+        args.text_output,
     )
 
 

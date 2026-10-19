@@ -15,7 +15,14 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
-from data_utils import STANCE_FIELDS, classify_stance, iter_json_object, parse_vote, participant_sides
+from data_utils import (
+    STANCE_FIELDS,
+    classify_stance,
+    iter_json_object,
+    parse_vote,
+    participant_sides,
+    profile_record,
+)
 
 
 def safe_int(value: Any) -> int:
@@ -256,13 +263,7 @@ def attach_profiles(users_path: Path, details: list[dict[str, Any]]) -> None:
     for username, profile in iter_json_object(users_path):
         if username.casefold() not in wanted:
             continue
-        profiles[username.casefold()] = {
-            "political_ideology": profile.get("political_ideology"),
-            "religious_ideology": profile.get("religious_ideology"),
-            "elo_ranking": profile.get("elo_ranking"),
-            "number_of_all_debates": safe_int(profile.get("number_of_all_debates")),
-            "number_of_voted_debates": safe_int(profile.get("number_of_voted_debates")),
-        }
+        profiles[username.casefold()] = profile_record(profile)
     for detail in details:
         names = {voter["username"] for voter in detail["voters"]}
         names.update(participant["username"] for participant in detail["participants"])
@@ -314,16 +315,36 @@ def write_outputs(project_dir: Path, audit: dict[str, Any], details: list[dict[s
     print(f"Wrote {len(index)} sample debates to {detail_dir}")
 
 
+def refresh_profiles(project_dir: Path, users_path: Path) -> None:
+    """Re-attach user profiles to the existing sample without re-selecting debates."""
+
+    detail_dir = project_dir / "frontend" / "public" / "data" / "debates"
+    paths = sorted(detail_dir.glob("*.json"))
+    details = [json.loads(path.read_text(encoding="utf-8")) for path in paths]
+    attach_profiles(users_path, details)
+    for path, detail in zip(paths, details, strict=True):
+        path.write_text(json.dumps(detail, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+    print(f"Refreshed profiles in {len(paths)} sample debates")
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--raw-dir", type=Path, required=True, help="Directory containing debates.json and users.json")
     parser.add_argument("--skip-users", action="store_true", help="Do not enrich selected users with profile metadata")
+    parser.add_argument(
+        "--profiles-only",
+        action="store_true",
+        help="Only refresh user profiles in the existing sample debates",
+    )
     args = parser.parse_args()
 
     raw_dir = args.raw_dir.resolve()
     project_dir = Path(__file__).resolve().parents[1]
     debates_path = raw_dir / "debates.json"
     users_path = raw_dir / "users.json"
+    if args.profiles_only:
+        refresh_profiles(project_dir, users_path)
+        return
     if not debates_path.exists():
         raise FileNotFoundError(debates_path)
 
